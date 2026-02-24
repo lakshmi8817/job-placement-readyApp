@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Notification App - Routes</title>
+    <link rel="stylesheet" href="job-notification-design-system.css">
+    <style>
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-primary);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        /* Navigation Styles */
+        .nav-container {
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-light);
+            padding: 0 var(--spacing-md);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .top-nav {
+            display: flex;
+            justify-content: center;
+            padding: var(--spacing-sm) 0;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--spacing-lg);
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-family: var(--font-body);
+            font-size: var(--font-size-base);
+            font-weight: 500;
+            padding: var(--spacing-xs) 0;
+            position: relative;
+            transition: color var(--transition-normal);
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-link.active {
+            color: var(--text-primary);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: var(--accent-primary);
+            border-radius: 2px;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-button {
+            display: none;
+            background: none;
+            border: none;
+            font-size: var(--font-size-xl);
+            cursor: pointer;
+            color: var(--text-primary);
+            padding: var(--spacing-xs);
+        }
+
+        .mobile-nav {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-light);
+            padding: var(--spacing-md);
+            z-index: 99;
+        }
+
+        .mobile-nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .mobile-nav-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-family: var(--font-body);
+            font-size: var(--font-size-lg);
+            padding: var(--spacing-sm);
+            transition: color var(--transition-normal);
+        }
+
+        .mobile-nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        .mobile-nav-link.active {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Page Container */
+        .page-container {
+            max-width: var(--max-width-content);
+            margin: var(--spacing-xl) auto;
+            padding: 0 var(--spacing-md);
+        }
+
+        /* Page Content */
+        .page-content {
+            text-align: center;
+            padding: var(--spacing-xl) var(--spacing-lg);
+        }
+
+        .page-content h1 {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .page-subtext {
+            color: var(--text-secondary);
+            font-size: var(--font-size-lg);
+            line-height: var(--line-height-normal);
+        }
+
+        /* 404 Page */
+        .error-page {
+            text-align: center;
+            padding: var(--spacing-xl) var(--spacing-lg);
+        }
+
+        .error-title {
+            font-family: var(--font-heading);
+            font-size: var(--font-size-3xl);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .error-subtext {
+            color: var(--text-secondary);
+            font-size: var(--font-size-lg);
+            line-height: var(--line-height-normal);
+        }
+
+        @media (max-width: 768px) {
+            .top-nav {
+                display: none;
+            }
+
+            .mobile-menu-button {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <div class="nav-container">
+        <div class="top-nav">
+            <ul class="nav-links">
+                <li><a href="#/" class="nav-link" data-route="/">Dashboard</a></li>
+                <li><a href="#/dashboard" class="nav-link" data-route="/dashboard">Dashboard</a></li>
+                <li><a href="#/saved" class="nav-link" data-route="/saved">Saved</a></li>
+                <li><a href="#/digest" class="nav-link" data-route="/digest">Digest</a></li>
+                <li><a href="#/settings" class="nav-link" data-route="/settings">Settings</a></li>
+                <li><a href="#/proof" class="nav-link" data-route="/proof">Proof</a></li>
+            </ul>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <button class="mobile-menu-button" id="mobileMenuButton">☰</button>
+        <div class="mobile-nav" id="mobileNav">
+            <ul class="mobile-nav-links">
+                <li><a href="#/" class="mobile-nav-link" data-route="/">Dashboard</a></li>
+                <li><a href="#/dashboard" class="mobile-nav-link" data-route="/dashboard">Dashboard</a></li>
+                <li><a href="#/saved" class="mobile-nav-link" data-route="/saved">Saved</a></li>
+                <li><a href="#/digest" class="mobile-nav-link" data-route="/digest">Digest</a></li>
+                <li><a href="#/settings" class="mobile-nav-link" data-route="/settings">Settings</a></li>
+                <li><a href="#/proof" class="mobile-nav-link" data-route="/proof">Proof</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="page-container" id="mainContent">
+        <!-- Pages will be dynamically inserted here -->
+    </div>
+
+    <script>
+        // Routing system
+        const routes = {
+            '/': renderHome,
+            '/dashboard': renderDashboard,
+            '/saved': renderSaved,
+            '/digest': renderDigest,
+            '/settings': renderSettings,
+            '/proof': renderProof
+        };
+
+        function renderHome() {
+            return `
+                <div class="page-content">
+                    <h1>Home</h1>
+                    <p class="page-subtext">This section will be built in the next step.</p>
+                </div>
+            `;
+        }
+
+        function renderDashboard() {
+            return `
+                <div class="page-content">
+                    <h1>Dashboard</h1>
+                    <p class="page-subtext">This section will be built in the next step.</p>
+                </div>
+            `;
+        }
+
+        function renderSaved() {
+            return `
+                <div class="page-content">
+                    <h1>Saved</h1>
+                    <p class="page-subtext">This section will be built in the next step.</p>
+                </div>
+            `;
+        }
+
+        function renderDigest() {
+            return `
+                <div class="page-content">
+                    <h1>Digest</h1>
+                    <p class="page-subtext">This section will be built in the next step.</p>
+                </div>
+            `;
+        }
+
+        function renderSettings() {
+            return `
+                <div class="page-content">
+                    <h1>Settings</h1>
+                    <p class="page-subtext">This section will be built in the next step.</p>
+                </div>
+            `;
+        }
+
+        function renderProof() {
+            return `
+                <div class="page-content">
+                    <h1>Proof</h1>
+                    <p class="page-subtext">This section will be built in the next step.</p>
+                </div>
+            `;
+        }
+
+        function renderNotFound() {
+            return `
+                <div class="error-page">
+                    <h1 class="error-title">Page Not Found</h1>
+                    <p class="error-subtext">The page you are looking for does not exist.</p>
+                </div>
+            `;
+        }
+
+        function updateActiveLinks(currentRoute) {
+            // Update desktop nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if (link.getAttribute('data-route') === currentRoute) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+
+            // Update mobile nav links
+            document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                if (link.getAttribute('data-route') === currentRoute) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        }
+
+        function navigateTo(route) {
+            // Close mobile menu if open
+            document.getElementById('mobileNav').style.display = 'none';
+            
+            let content = '';
+            
+            if (routes[route]) {
+                content = routes[route]();
+            } else {
+                content = renderNotFound();
+            }
+            
+            document.getElementById('mainContent').innerHTML = content;
+            updateActiveLinks(route);
+            
+            // Update URL without reloading
+            history.pushState({}, '', '#' + route);
+        }
+
+        function handleHashChange() {
+            let route = window.location.hash.substring(1);
+            if (!route || route === '') {
+                route = '/';
+            }
+            navigateTo(route);
+        }
+
+        // Set up event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            // Handle initial load
+            handleHashChange();
+            
+            // Handle hash change
+            window.addEventListener('hashchange', handleHashChange);
+            
+            // Handle navigation clicks
+            document.querySelectorAll('.nav-link, .mobile-nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const route = link.getAttribute('data-route');
+                    navigateTo(route);
+                });
+            });
+            
+            // Mobile menu toggle
+            document.getElementById('mobileMenuButton').addEventListener('click', () => {
+                const mobileNav = document.getElementById('mobileNav');
+                mobileNav.style.display = mobileNav.style.display === 'block' ? 'none' : 'block';
+            });
+            
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', (e) => {
+                const mobileNav = document.getElementById('mobileNav');
+                const mobileMenuButton = document.getElementById('mobileMenuButton');
+                
+                if (!mobileNav.contains(e.target) && e.target !== mobileMenuButton) {
+                    mobileNav.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
