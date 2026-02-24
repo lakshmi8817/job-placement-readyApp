@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Notification App - Design System</title>
+    <link rel="stylesheet" href="job-notification-design-system.css">
+    <link href="https://fonts.googleapis.com/css2?family=Georgia:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-primary);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .demo-section {
+            margin-bottom: var(--spacing-xl);
+            padding: var(--spacing-lg);
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-light);
+        }
+        
+        .section-title {
+            font-family: var(--font-heading);
+            font-size: var(--font-size-2xl);
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+        }
+        
+        .component-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: var(--spacing-md);
+            margin: var(--spacing-md) 0;
+        }
+        
+        .color-sample {
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            text-align: center;
+            color: white;
+            font-size: var(--font-size-sm);
+        }
+        
+        .color-label {
+            display: block;
+            margin-top: var(--spacing-xs);
+            color: var(--text-primary);
+            font-size: var(--font-size-xs);
+        }
+        
+        .button-row {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+            margin: var(--spacing-sm) 0;
+        }
+        
+        .input-demo {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .card-demo {
+            margin: var(--spacing-md) 0;
+        }
+        
+        .layout-demo {
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-light);
+            overflow: hidden;
+            margin-top: var(--spacing-lg);
+        }
+        
+        .proof-footer-demo {
+            background-color: var(--bg-secondary);
+            border-top: 1px solid var(--border-light);
+            padding: var(--spacing-lg);
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="app-name">Job Notification App</div>
+        <div class="progress-indicator">Step 1 / 4</div>
+        <div class="status-badge status-in-progress">In Progress</div>
+    </div>
+
+    <!-- Context Header -->
+    <div class="context-header">
+        <h1>Job Application Dashboard</h1>
+        <p class="subtitle">Track and manage your job applications in one place</p>
+    </div>
+
+    <div class="container">
+        <div class="demo-section">
+            <h2 class="section-title">Design System Components</h2>
+            
+            <h3>Color Palette</h3>
+            <div class="component-grid">
+                <div>
+                    <div class="color-sample" style="background-color: var(--bg-primary);">
+                        Background<br>
+                        <span class="color-label">#F7F6F3</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="color-sample" style="background-color: var(--text-primary); color: white;">
+                        Primary Text<br>
+                        <span class="color-label" style="color: white;">#111111</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="color-sample" style="background-color: var(--accent-primary);">
+                        Accent<br>
+                        <span class="color-label">#8B0000</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="color-sample" style="background-color: var(--success);">
+                        Success<br>
+                        <span class="color-label">#2E7D32</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="color-sample" style="background-color: var(--warning);">
+                        Warning<br>
+                        <span class="color-label">#FF8F00</span>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Typography</h3>
+            <div class="typography-demo">
+                <h1>H1 Heading - Serif Font</h1>
+                <h2>H2 Heading - Serif Font</h2>
+                <h3>H3 Heading - Serif Font</h3>
+                <h4>H4 Heading - Serif Font</h4>
+                <p>Body text - Sans-serif font, 16px, line-height 1.6</p>
+                <p class="text-small">Small text - Sans-serif font, 14px</p>
+                <p class="text-large">Large text - Sans-serif font, 18px</p>
+            </div>
+
+            <h3>Buttons</h3>
+            <div class="button-row">
+                <button class="btn btn-primary">Primary Button</button>
+                <button class="btn btn-secondary">Secondary Button</button>
+                <button class="btn btn-success">Success Button</button>
+                <button class="btn btn-warning">Warning Button</button>
+                <button class="btn btn-error">Error Button</button>
+            </div>
+
+            <h3>Inputs</h3>
+            <div class="input-demo">
+                <input type="text" class="input" placeholder="Text input">
+            </div>
+            <div class="input-demo">
+                <textarea class="textarea" placeholder="Textarea"></textarea>
+            </div>
+            <div class="input-demo">
+                <select class="select">
+                    <option>Select an option</option>
+                    <option>Option 1</option>
+                    <option>Option 2</option>
+                </select>
+            </div>
+
+            <h3>Cards</h3>
+            <div class="card card-demo">
+                <div class="card-header">
+                    <h3>Card Header</h3>
+                </div>
+                <p>This is a sample card with clean borders and no heavy shadows. Content is organized and spaced appropriately.</p>
+                <div class="card-footer">
+                    <small>Card footer with additional information</small>
+                </div>
+            </div>
+
+            <h3>Alerts</h3>
+            <div class="alert alert-info">
+                <strong>Info:</strong> This is an informational message.
+            </div>
+            <div class="alert alert-success">
+                <strong>Success:</strong> Action completed successfully.
+            </div>
+            <div class="alert alert-warning">
+                <strong>Warning:</strong> Please review this section.
+            </div>
+            <div class="alert alert-error">
+                <strong>Error:</strong> Something went wrong. Please try again.
+            </div>
+
+            <h3>Empty State</h3>
+            <div class="empty-state">
+                <div class="empty-state-icon">📋</div>
+                <h3 class="empty-state-title">No Applications Yet</h3>
+                <p class="empty-state-message">Start by adding your first job application to begin tracking.</p>
+                <button class="btn btn-primary">Add First Application</button>
+            </div>
+
+            <h3>Error State</h3>
+            <div class="error-state">
+                <h3 class="error-state-title">Connection Failed</h3>
+                <p class="error-state-message">We couldn't connect to the server. Please check your internet connection and try again.</p>
+                <div class="error-state-actions">
+                    <button class="btn btn-primary">Retry Connection</button>
+                    <button class="btn btn-secondary">Contact Support</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Layout Structure Demo -->
+    <div class="layout-demo">
+        <div class="main-layout">
+            <div class="primary-workspace">
+                <div class="demo-section">
+                    <h2 class="section-title">Primary Workspace (70%)</h2>
+                    <p>This section takes up 70% of the layout and contains the main content. It features clean cards with predictable components and subtle borders.</p>
+                    
+                    <div class="card">
+                        <h3>Recent Applications</h3>
+                        <p>Showing 3 of 12 active applications</p>
+                        
+                        <div class="card">
+                            <h4>Frontend Developer at TechCorp</h4>
+                            <p>Status: Interview Scheduled</p>
+                            <p>Last Updated: Today</p>
+                        </div>
+                        
+                        <div class="card">
+                            <h4>UX Designer at DesignStudio</h4>
+                            <p>Status: Application Submitted</p>
+                            <p>Last Updated: Yesterday</p>
+                        </div>
+                        
+                        <div class="card">
+                            <h4>Full Stack Engineer at StartupXYZ</h4>
+                            <p>Status: Technical Challenge</p>
+                            <p>Last Updated: 2 days ago</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="secondary-panel">
+                <div class="demo-section">
+                    <h2 class="section-title">Secondary Panel (30%)</h2>
+                    <p>This panel contains supplementary information and actions.</p>
+                    
+                    <div class="card">
+                        <h3>Next Steps</h3>
+                        <ul style="padding-left: var(--spacing-md); margin: var(--spacing-md) 0;">
+                            <li>Prepare for TechCorp interview</li>
+                            <li>Follow up on DesignStudio application</li>
+                            <li>Complete StartupXYZ challenge</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Copyable Prompt</h3>
+                        <textarea class="textarea" readonly>
+"Generate a cover letter for a frontend developer position at TechCorp. Highlight my experience with React and TypeScript."
+                        </textarea>
+                        <button class="btn btn-secondary" style="margin-top: var(--spacing-sm); width: 100%;">Copy Prompt</button>
+                    </div>
+                    
+                    <div class="button-row" style="margin-top: var(--spacing-md);">
+                        <button class="btn btn-primary" style="flex: 1;">Save Draft</button>
+                        <button class="btn btn-secondary" style="flex: 1;">Preview</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Proof Footer -->
+    <div class="proof-footer-demo">
+        <div class="checklist">
+            <div class="checklist-item">
+                <span class="checkbox checked">✓</span>
+                UI Built
+            </div>
+            <div class="checklist-item">
+                <span class="checkbox checked">✓</span>
+                Logic Working
+            </div>
+            <div class="checklist-item">
+                <span class="checkbox">□</span>
+                Test Passed
+            </div>
+            <div class="checklist-item">
+                <span class="checkbox">□</span>
+                Deployed
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Job Notification App – Design System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="./design-system.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <!-- Top Bar -->
+      <header class="app-shell__top-bar">
+        <div class="top-bar__app-name">Job Notification App</div>
+        <nav class="top-bar__nav" aria-label="Primary">
+          <a href="/dashboard" class="top-bar__nav-link" data-route="/dashboard">Dashboard</a>
+          <a href="/saved" class="top-bar__nav-link" data-route="/saved">Saved</a>
+          <a href="/digest" class="top-bar__nav-link" data-route="/digest">Digest</a>
+          <a href="/settings" class="top-bar__nav-link" data-route="/settings">Settings</a>
+          <a href="/proof" class="top-bar__nav-link" data-route="/proof">Proof</a>
+        </nav>
+        <button class="top-bar__menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav">
+          Menu
+        </button>
+        <div class="top-bar__status-badge">Not Started</div>
+      </header>
+
+      <div class="top-bar__nav-panel" id="mobile-nav">
+        <nav class="top-bar__nav" aria-label="Primary mobile">
+          <a href="/dashboard" class="top-bar__nav-link" data-route="/dashboard">Dashboard</a>
+          <a href="/saved" class="top-bar__nav-link" data-route="/saved">Saved</a>
+          <a href="/digest" class="top-bar__nav-link" data-route="/digest">Digest</a>
+          <a href="/settings" class="top-bar__nav-link" data-route="/settings">Settings</a>
+          <a href="/proof" class="top-bar__nav-link" data-route="/proof">Proof</a>
+        </nav>
+      </div>
+
+      <!-- Context Header -->
+      <section class="app-shell__context-header">
+        <h1 id="page-title" class="context-header__title">Dashboard</h1>
+        <p id="page-subtitle" class="context-header__subtitle max-text-width">
+          This section will be built in the next step.
+        </p>
+      </section>
+
+      <!-- Main Workspace -->
+      <main class="app-shell__main">
+        <!-- Primary Workspace (70%) -->
+        <section class="app-shell__primary" id="primary-region"></section>
+
+        <!-- Secondary Panel (30%) -->
+        <aside class="app-shell__secondary" id="secondary-region"></aside>
+      </main>
+
+      <!-- Proof Footer -->
+      <footer class="app-shell__proof-footer">
+        <div class="proof-footer__checklist">
+          <div class="proof-footer__item">
+            <span class="proof-footer__box" aria-hidden="true"></span>
+            <span>UI Built</span>
+          </div>
+          <div class="proof-footer__item">
+            <span class="proof-footer__box" aria-hidden="true"></span>
+            <span>Logic Working</span>
+          </div>
+          <div class="proof-footer__item">
+            <span class="proof-footer__box" aria-hidden="true"></span>
+            <span>Test Passed</span>
+          </div>
+          <div class="proof-footer__item">
+            <span class="proof-footer__box" aria-hidden="true"></span>
+            <span>Deployed</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
+
