@@ -1,0 +1,1985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Notification Tracker - Complete with Scoring</title>
+    <link rel="stylesheet" href="job-notification-design-system.css">
+    <style>
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-primary);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        /* Navigation Styles */
+        .nav-container {
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-light);
+            padding: 0 var(--spacing-md);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .top-nav {
+            display: flex;
+            justify-content: center;
+            padding: var(--spacing-sm) 0;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--spacing-lg);
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-family: var(--font-body);
+            font-size: var(--font-size-base);
+            font-weight: 500;
+            padding: var(--spacing-xs) 0;
+            position: relative;
+            transition: color var(--transition-normal);
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-link.active {
+            color: var(--text-primary);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: var(--accent-primary);
+            border-radius: 2px;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-button {
+            display: none;
+            background: none;
+            border: none;
+            font-size: var(--font-size-xl);
+            cursor: pointer;
+            color: var(--text-primary);
+            padding: var(--spacing-xs);
+        }
+
+        .mobile-nav {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-light);
+            padding: var(--spacing-md);
+            z-index: 99;
+        }
+
+        .mobile-nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .mobile-nav-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-family: var(--font-body);
+            font-size: var(--font-size-lg);
+            padding: var(--spacing-sm);
+            transition: color var(--transition-normal);
+        }
+
+        .mobile-nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        .mobile-nav-link.active {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Page Container */
+        .page-container {
+            max-width: var(--max-width-content);
+            margin: var(--spacing-xl) auto;
+            padding: 0 var(--spacing-md);
+        }
+
+        /* Landing Page Styles */
+        .landing-page {
+            text-align: center;
+            padding: var(--spacing-xl) var(--spacing-lg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 70vh;
+        }
+
+        .landing-headline {
+            font-family: var(--font-heading);
+            font-size: var(--font-size-4xl);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+            line-height: var(--line-height-tight);
+        }
+
+        .landing-subtext {
+            color: var(--text-secondary);
+            font-size: var(--font-size-lg);
+            line-height: var(--line-height-normal);
+            margin-bottom: var(--spacing-lg);
+            max-width: 600px;
+        }
+
+        .cta-button {
+            background-color: var(--accent-primary);
+            color: white;
+            border: 1px solid var(--accent-primary);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md) var(--spacing-lg);
+            font-size: var(--font-size-lg);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            background-color: var(--accent-primary-hover);
+            border-color: var(--accent-primary-hover);
+        }
+
+        /* Settings Page Styles */
+        .settings-page {
+            padding: var(--spacing-xl) var(--spacing-lg);
+        }
+
+        .settings-title {
+            font-family: var(--font-heading);
+            font-size: var(--font-size-3xl);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .preferences-form {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .form-label {
+            display: block;
+            font-family: var(--font-body);
+            font-size: var(--font-size-base);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 1px solid var(--border-medium);
+            border-radius: var(--radius-md);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: var(--font-size-base);
+            transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px var(--accent-primary) inset;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-sm);
+        }
+
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .checkbox-input {
+            margin: 0;
+        }
+
+        .multi-select {
+            width: 100%;
+            padding: var(--spacing-sm);
+            border: 1px solid var(--border-medium);
+            border-radius: var(--radius-md);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: var(--font-size-base);
+            height: auto;
+            min-height: 100px;
+        }
+
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+        }
+
+        .slider-value {
+            text-align: right;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        /* Dashboard Page Styles */
+        .dashboard-page {
+            padding: var(--spacing-xl) var(--spacing-lg);
+        }
+
+        .dashboard-title {
+            font-family: var(--font-heading);
+            font-size: var(--font-size-3xl);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+        }
+
+        /* Preference Banner */
+        .preference-banner {
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-medium);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        /* Toggle Switch */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+            padding: var(--spacing-sm);
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius-md);
+        }
+
+        .toggle-label {
+            font-family: var(--font-body);
+            font-size: var(--font-size-base);
+            color: var(--text-primary);
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border-heavy);
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--accent-primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Filter Bar Styles */
+        .filter-bar {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: var(--spacing-md);
+        }
+
+        @media (max-width: 768px) {
+            .filter-bar {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto auto;
+            }
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-label {
+            font-family: var(--font-body);
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-xs);
+            font-weight: 500;
+        }
+
+        .filter-input, .filter-select {
+            padding: var(--spacing-sm);
+            border: 1px solid var(--border-medium);
+            border-radius: var(--radius-md);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: var(--font-size-base);
+        }
+
+        .filter-input:focus, .filter-select:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px var(--accent-primary) inset;
+        }
+
+        .jobs-container {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .job-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            transition: box-shadow var(--transition-normal);
+        }
+
+        .job-card:hover {
+            box-shadow: 0 4px 12px var(--shadow-light);
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .job-title {
+            font-family: var(--font-heading);
+            font-size: var(--font-size-lg);
+            color: var(--text-primary);
+            margin: 0;
+            flex: 1;
+        }
+
+        .job-company {
+            font-family: var(--font-body);
+            font-size: var(--font-size-base);
+            color: var(--text-secondary);
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .job-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+
+        .job-location-mode {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .job-experience {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .job-salary {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .source-badge {
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-xs);
+            font-weight: 500;
+        }
+
+        .match-score {
+            display: inline-block;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-xs);
+            font-weight: 500;
+            margin-left: var(--spacing-sm);
+        }
+
+        .match-score-high {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .match-score-medium {
+            background-color: #FFC107;
+            color: #333;
+        }
+
+        .match-score-low {
+            background-color: #9E9E9E;
+            color: white;
+        }
+
+        .match-score-very-low {
+            background-color: #BDBDBD;
+            color: #333;
+        }
+
+        .posted-time {
+            color: var(--text-tertiary);
+            font-size: var(--font-size-xs);
+        }
+
+        .job-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+        }
+
+        .btn-job {
+            font-family: var(--font-body);
+            font-size: var(--font-size-sm);
+            line-height: var(--line-height-tight);
+            border-radius: var(--radius-md);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-sm) var(--spacing-md);
+            text-decoration: none;
+        }
+
+        .btn-view {
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-medium);
+        }
+
+        .btn-view:hover {
+            background-color: var(--border-light);
+        }
+
+        .btn-save {
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-medium);
+        }
+
+        .btn-save:hover {
+            background-color: var(--border-light);
+        }
+
+        .btn-apply {
+            background-color: var(--accent-primary);
+            color: white;
+            border: 1px solid var(--accent-primary);
+        }
+
+        .btn-apply:hover {
+            background-color: var(--accent-primary-hover);
+            border-color: var(--accent-primary-hover);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: var(--spacing-md);
+        }
+
+        .modal-content {
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: var(--spacing-lg);
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: var(--spacing-sm);
+            right: var(--spacing-sm);
+            background: none;
+            border: none;
+            font-size: var(--font-size-xl);
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .modal-title {
+            font-family: var(--font-heading);
+            font-size: var(--font-size-xl);
+            color: var(--text-primary);
+            margin-top: 0;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .modal-company {
+            font-family: var(--font-body);
+            font-size: var(--font-size-lg);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-md);
+            font-weight: 500;
+        }
+
+        .modal-description {
+            color: var(--text-primary);
+            line-height: var(--line-height-normal);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .modal-skills {
+            margin-top: var(--spacing-md);
+        }
+
+        .modal-skills-title {
+            font-family: var(--font-body);
+            font-size: var(--font-size-base);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+            font-weight: 500;
+        }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-xs);
+        }
+
+        .skill-tag {
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-xs);
+        }
+
+        /* Saved Page Styles */
+        .saved-page {
+            padding: var(--spacing-xl) var(--spacing-lg);
+        }
+
+        .saved-title {
+            font-family: var(--font-heading);
+            font-size: var(--font-size-3xl);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .saved-empty {
+            padding: var(--spacing-xl) var(--spacing-lg);
+            color: var(--text-secondary);
+            font-size: var(--font-size-lg);
+            line-height: var(--line-height-normal);
+            text-align: center;
+        }
+
+        /* Digest Page Styles */
+        .digest-page {
+            padding: var(--spacing-xl) var(--spacing-lg);
+        }
+
+        .digest-title {
+            font-family: var(--font-heading);
+            font-size: var(--font-size-3xl);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+            text-align: center;
+        }
+
+        /* Proof Page Styles */
+        .proof-page {
+            padding: var(--spacing-xl) var(--spacing-lg);
+            text-align: center;
+        }
+
+        .proof-title {
+            font-family: var(--font-heading);
+            font-size: var(--font-size-3xl);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .proof-subtext {
+            color: var(--text-secondary);
+            font-size: var(--font-size-lg);
+            line-height: var(--line-height-normal);
+        }
+
+        /* No Results Message */
+        .no-results {
+            text-align: center;
+            padding: var(--spacing-xl) var(--spacing-lg);
+            color: var(--text-secondary);
+            font-size: var(--font-size-lg);
+            line-height: var(--line-height-normal);
+        }
+
+        @media (max-width: 768px) {
+            .top-nav {
+                display: none;
+            }
+
+            .mobile-menu-button {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .landing-headline {
+                font-size: var(--font-size-3xl);
+            }
+
+            .job-header {
+                flex-direction: column;
+                gap: var(--spacing-xs);
+            }
+
+            .job-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <div class="nav-container">
+        <div class="top-nav">
+            <ul class="nav-links">
+                <li><a href="#/dashboard" class="nav-link" data-route="/dashboard">Dashboard</a></li>
+                <li><a href="#/saved" class="nav-link" data-route="/saved">Saved</a></li>
+                <li><a href="#/digest" class="nav-link" data-route="/digest">Digest</a></li>
+                <li><a href="#/settings" class="nav-link" data-route="/settings">Settings</a></li>
+                <li><a href="#/proof" class="nav-link" data-route="/proof">Proof</a></li>
+            </ul>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <button class="mobile-menu-button" id="mobileMenuButton">☰</button>
+        <div class="mobile-nav" id="mobileNav">
+            <ul class="mobile-nav-links">
+                <li><a href="#/dashboard" class="mobile-nav-link" data-route="/dashboard">Dashboard</a></li>
+                <li><a href="#/saved" class="mobile-nav-link" data-route="/saved">Saved</a></li>
+                <li><a href="#/digest" class="mobile-nav-link" data-route="/digest">Digest</a></li>
+                <li><a href="#/settings" class="mobile-nav-link" data-route="/settings">Settings</a></li>
+                <li><a href="#/proof" class="mobile-nav-link" data-route="/proof">Proof</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="page-container" id="mainContent">
+        <!-- Landing page will be shown initially -->
+        <div class="landing-page">
+            <h1 class="landing-headline">Stop Missing The Right Jobs.</h1>
+            <p class="landing-subtext">Precision-matched job discovery delivered daily at 9AM.</p>
+            <a href="#/settings" class="cta-button" id="ctaButton">Start Tracking</a>
+        </div>
+    </div>
+
+    <!-- Job Detail Modal -->
+    <div id="jobModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal">&times;</button>
+            <h2 class="modal-title" id="modalTitle"></h2>
+            <p class="modal-company" id="modalCompany"></p>
+            <div class="modal-description" id="modalDescription"></div>
+            <div class="modal-skills">
+                <h3 class="modal-skills-title">Skills Required:</h3>
+                <div class="skills-list" id="modalSkills"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Realistic Indian tech job dataset
+        const jobDataset = [
+            {
+                id: 1,
+                title: "SDE Intern",
+                company: "Amazon India",
+                location: "Bangalore",
+                mode: "Hybrid",
+                experience: "Fresher",
+                skills: ["Java", "Python", "SQL", "Algorithms"],
+                source: "LinkedIn",
+                postedDaysAgo: 0,
+                salaryRange: "₹15k–₹40k/month Internship",
+                applyUrl: "https://www.amazon.jobs/en/jobs/123456/sde-intern",
+                description: "Join Amazon's engineering team as an intern. Work on scalable distributed systems. Collaborate with senior engineers to solve complex problems. Learn AWS technologies and best practices."
+            },
+            {
+                id: 2,
+                title: "Graduate Engineer Trainee",
+                company: "TCS",
+                location: "Chennai",
+                mode: "Onsite",
+                experience: "Fresher",
+                skills: ["C++", "Java", "Database", "Testing"],
+                source: "Naukri",
+                postedDaysAgo: 1,
+                salaryRange: "3–5 LPA",
+                applyUrl: "https://www.tcs.com/careers/graduate-engineer-trainee",
+                description: "Comprehensive training program for fresh graduates. Learn software development lifecycle. Work on enterprise solutions. Mentorship from experienced professionals."
+            },
+            {
+                id: 3,
+                title: "Junior Backend Developer",
+                company: "Swiggy",
+                location: "Bangalore",
+                mode: "Hybrid",
+                experience: "0-1",
+                skills: ["Node.js", "Express", "MongoDB", "REST APIs"],
+                source: "Indeed",
+                postedDaysAgo: 2,
+                salaryRange: "6–10 LPA",
+                applyUrl: "https://careers.swiggy.com/backend-developer",
+                description: "Develop and maintain backend services for food delivery platform. Optimize API performance. Work with microservices architecture. Collaborate with frontend team."
+            },
+            {
+                id: 4,
+                title: "Frontend Intern",
+                company: "Flipkart",
+                location: "Bangalore",
+                mode: "Remote",
+                experience: "Fresher",
+                skills: ["React", "JavaScript", "HTML", "CSS"],
+                source: "LinkedIn",
+                postedDaysAgo: 0,
+                salaryRange: "₹20k–₹35k/month Internship",
+                applyUrl: "https://www.flipkartcareers.com/front-end-intern",
+                description: "Build responsive user interfaces for e-commerce platform. Implement new features using React. Work with design team to improve user experience. Participate in code reviews."
+            },
+            {
+                id: 5,
+                title: "QA Intern",
+                company: "Infosys",
+                location: "Pune",
+                mode: "Onsite",
+                experience: "Fresher",
+                skills: ["Manual Testing", "Automation", "Selenium", "JIRA"],
+                source: "Naukri",
+                postedDaysAgo: 3,
+                salaryRange: "₹18k–₹30k/month Internship",
+                applyUrl: "https://www.infosys.com/careers/qc-intern",
+                description: "Assist in quality assurance processes. Execute test cases. Identify and report defects. Learn automation testing tools. Work with development teams."
+            },
+            {
+                id: 6,
+                title: "Data Analyst Intern",
+                company: "Accenture",
+                location: "Mumbai",
+                mode: "Hybrid",
+                experience: "Fresher",
+                skills: ["Python", "SQL", "Excel", "Tableau"],
+                source: "LinkedIn",
+                postedDaysAgo: 1,
+                salaryRange: "₹22k–₹38k/month Internship",
+                applyUrl: "https://www.accenture.com/in-en/careers/data-analyst-intern",
+                description: "Analyze business data to provide insights. Create dashboards and reports. Support decision-making processes. Work with large datasets using SQL and Python."
+            },
+            {
+                id: 7,
+                title: "Java Developer (0-1)",
+                company: "Cognizant",
+                location: "Hyderabad",
+                mode: "Remote",
+                experience: "0-1",
+                skills: ["Java", "Spring Boot", "Hibernate", "Microservices"],
+                source: "Indeed",
+                postedDaysAgo: 4,
+                salaryRange: "6–10 LPA",
+                applyUrl: "https://www.cognizant.com/careers/java-developer",
+                description: "Develop enterprise applications using Java. Implement RESTful services. Work with Spring ecosystem. Participate in agile development cycles. Code reviews and testing."
+            },
+            {
+                id: 8,
+                title: "Python Developer (Fresher)",
+                company: "Zoho",
+                location: "Chennai",
+                mode: "Onsite",
+                experience: "Fresher",
+                skills: ["Python", "Django", "Flask", "PostgreSQL"],
+                source: "Naukri",
+                postedDaysAgo: 2,
+                salaryRange: "8–12 LPA",
+                applyUrl: "https://www.zohocorp.com/careers/python-developer",
+                description: "Build web applications using Python frameworks. Design database schemas. Write unit tests. Collaborate with product team. Learn Zoho's development methodologies."
+            },
+            {
+                id: 9,
+                title: "React Developer (1-3)",
+                company: "Freshworks",
+                location: "Chennai",
+                mode: "Hybrid",
+                experience: "1-3",
+                skills: ["React", "Redux", "JavaScript", "CSS"],
+                source: "LinkedIn",
+                postedDaysAgo: 0,
+                salaryRange: "10–18 LPA",
+                applyUrl: "https://www.freshworks.com/jobs/react-developer",
+                description: "Develop customer-facing features for SaaS products. Optimize performance of React applications. Implement responsive designs. Work with design and product teams."
+            },
+            {
+                id: 10,
+                title: "DevOps Engineer",
+                company: "Oracle",
+                location: "Bangalore",
+                mode: "Hybrid",
+                experience: "3-5",
+                skills: ["AWS", "Docker", "Kubernetes", "CI/CD"],
+                source: "LinkedIn",
+                postedDaysAgo: 1,
+                salaryRange: "15–25 LPA",
+                applyUrl: "https://www.oracle.com/corporate/careers/devops-engineer",
+                description: "Manage cloud infrastructure. Implement CI/CD pipelines. Monitor system performance. Automate deployment processes. Ensure security and compliance."
+            },
+            {
+                id: 11,
+                title: "UI/UX Designer",
+                company: "PhonePe",
+                location: "Bangalore",
+                mode: "Onsite",
+                experience: "1-3",
+                skills: ["Figma", "Adobe XD", "Prototyping", "User Research"],
+                source: "Indeed",
+                postedDaysAgo: 3,
+                salaryRange: "12–20 LPA",
+                applyUrl: "https://www.phonepe.com/careers/ui-ux-designer",
+                description: "Design intuitive user interfaces for fintech products. Conduct user research and testing. Create interactive prototypes. Collaborate with product and engineering teams."
+            },
+            {
+                id: 12,
+                title: "Full Stack Developer",
+                company: "Paytm",
+                location: "Noida",
+                mode: "Hybrid",
+                experience: "3-5",
+                skills: ["React", "Node.js", "MongoDB", "AWS"],
+                source: "Naukri",
+                postedDaysAgo: 2,
+                salaryRange: "18–28 LPA",
+                applyUrl: "https://careers.paytm.com/full-stack-developer",
+                description: "Build end-to-end features for digital payments platform. Develop both frontend and backend components. Optimize system performance. Ensure security best practices."
+            },
+            {
+                id: 13,
+                title: "Machine Learning Engineer",
+                company: "Juspay",
+                location: "Bangalore",
+                mode: "Remote",
+                experience: "3-5",
+                skills: ["Python", "TensorFlow", "PyTorch", "ML Algorithms"],
+                source: "LinkedIn",
+                postedDaysAgo: 0,
+                salaryRange: "20–35 LPA",
+                applyUrl: "https://www.juspay.in/careers/ml-engineer",
+                description: "Develop machine learning models for payment processing. Work on fraud detection algorithms. Implement NLP and computer vision solutions. Research and prototype new ML techniques."
+            },
+            {
+                id: 14,
+                title: "Business Analyst",
+                company: "Capgemini",
+                location: "Pune",
+                mode: "Hybrid",
+                experience: "1-3",
+                skills: ["Requirements Gathering", "Process Mapping", "SQL", "Power BI"],
+                source: "Naukri",
+                postedDaysAgo: 4,
+                salaryRange: "8–14 LPA",
+                applyUrl: "https://www.capgemini.com/in-en/careers/business-analyst",
+                description: "Bridge business and technology teams. Analyze requirements for software projects. Create process documentation. Support project implementation and testing."
+            },
+            {
+                id: 15,
+                title: "Cybersecurity Specialist",
+                company: "IBM",
+                location: "Bangalore",
+                mode: "Onsite",
+                experience: "3-5",
+                skills: ["Security", "SIEM", "Incident Response", "Penetration Testing"],
+                source: "LinkedIn",
+                postedDaysAgo: 1,
+                salaryRange: "16–26 LPA",
+                applyUrl: "https://www.ibm.com/in-en/employment/cybersecurity-specialist",
+                description: "Protect organization's digital assets. Monitor security incidents. Conduct vulnerability assessments. Implement security policies and procedures."
+            },
+            {
+                id: 16,
+                title: "Product Manager",
+                company: "CRED",
+                location: "Bangalore",
+                mode: "Onsite",
+                experience: "3-5",
+                skills: ["Product Strategy", "Roadmap", "Analytics", "Agile"],
+                source: "LinkedIn",
+                postedDaysAgo: 2,
+                salaryRange: "25–40 LPA",
+                applyUrl: "https://www.cred.club/careers/product-manager",
+                description: "Define product vision and strategy. Work with engineering and design teams. Analyze user feedback and market trends. Drive product development lifecycle."
+            },
+            {
+                id: 17,
+                title: "iOS Developer",
+                company: "Razorpay",
+                location: "Bangalore",
+                mode: "Hybrid",
+                experience: "1-3",
+                skills: ["Swift", "Objective-C", "iOS SDK", "REST APIs"],
+                source: "Indeed",
+                postedDaysAgo: 0,
+                salaryRange: "12–20 LPA",
+                applyUrl: "https://razorpay.com/jobs/ios-developer",
+                description: "Develop iOS applications for financial services. Implement secure payment features. Optimize app performance. Collaborate with backend team for API integration."
+            },
+            {
+                id: 18,
+                title: "Android Developer",
+                company: "Wipro",
+                location: "Hyderabad",
+                mode: "Remote",
+                experience: "1-3",
+                skills: ["Kotlin", "Java", "Android SDK", "Firebase"],
+                source: "Naukri",
+                postedDaysAgo: 3,
+                salaryRange: "8–14 LPA",
+                applyUrl: "https://careers.wipro.com/android-developer",
+                description: "Build Android applications for enterprise clients. Implement UI components. Integrate with backend services. Ensure app quality and performance."
+            },
+            {
+                id: 19,
+                title: "Data Scientist",
+                company: "SAP Labs",
+                location: "Bangalore",
+                mode: "Hybrid",
+                experience: "3-5",
+                skills: ["Python", "R", "Statistics", "ML", "Deep Learning"],
+                source: "LinkedIn",
+                postedDaysAgo: 1,
+                salaryRange: "18–30 LPA",
+                applyUrl: "https://www.sap.com/in/careers/data-scientist",
+                description: "Develop predictive models for business intelligence. Analyze large datasets. Create data visualizations. Collaborate with business stakeholders for insights."
+            },
+            {
+                id: 20,
+                title: "Cloud Architect",
+                company: "Dell Technologies",
+                location: "Bangalore",
+                mode: "Onsite",
+                experience: "5+",
+                skills: ["AWS", "Azure", "GCP", "Infrastructure", "Security"],
+                source: "LinkedIn",
+                postedDaysAgo: 2,
+                salaryRange: "25–45 LPA",
+                applyUrl: "https://jobs.dell.com/cloud-architect",
+                description: "Design cloud infrastructure solutions. Lead migration projects. Ensure scalability and reliability. Advise on cloud security and cost optimization."
+            },
+            {
+                id: 21,
+                title: "Technical Writer",
+                company: "SAP",
+                location: "Bangalore",
+                mode: "Hybrid",
+                experience: "1-3",
+                skills: ["Documentation", "API Writing", "Tools", "Editing"],
+                source: "Naukri",
+                postedDaysAgo: 4,
+                salaryRange: "6–12 LPA",
+                applyUrl: "https://www.sap.com/about/careers/technical-writer",
+                description: "Create technical documentation for software products. Write API guides and tutorials. Collaborate with engineering teams. Maintain documentation standards."
+            },
+            {
+                id: 22,
+                title: "Scrum Master",
+                company: "Cognizant",
+                location: "Pune",
+                mode: "Remote",
+                experience: "3-5",
+                skills: ["Agile", "Scrum", "Project Management", "Facilitation"],
+                source: "Indeed",
+                postedDaysAgo: 0,
+                salaryRange: "10–18 LPA",
+                applyUrl: "https://www.cognizant.com/careers/scrum-master",
+                description: "Facilitate agile ceremonies. Remove impediments for teams. Coach on Scrum practices. Track project progress and metrics."
+            },
+            {
+                id: 23,
+                title: "Blockchain Developer",
+                company: "Tata Elxsi",
+                location: "Chennai",
+                mode: "Onsite",
+                experience: "3-5",
+                skills: ["Solidity", "Ethereum", "Smart Contracts", "Web3"],
+                source: "LinkedIn",
+                postedDaysAgo: 1,
+                salaryRange: "15–25 LPA",
+                applyUrl: "https://www.tataelxsi.co.in/blockchain-developer",
+                description: "Develop blockchain applications and smart contracts. Work with decentralized protocols. Implement security measures. Research emerging blockchain technologies."
+            },
+            {
+                id: 24,
+                title: "System Administrator",
+                company: "Tech Mahindra",
+                location: "Mumbai",
+                mode: "Hybrid",
+                experience: "1-3",
+                skills: ["Linux", "Windows Server", "Networking", "Security"],
+                source: "Naukri",
+                postedDaysAgo: 3,
+                salaryRange: "5–9 LPA",
+                applyUrl: "https://www.techmahindra.com/system-administrator",
+                description: "Maintain IT infrastructure. Install and configure servers. Monitor system performance. Ensure security and compliance standards."
+            },
+            {
+                id: 25,
+                title: "Network Security Engineer",
+                company: "HCL Technologies",
+                location: "Noida",
+                mode: "Onsite",
+                experience: "3-5",
+                skills: ["Firewalls", "VPN", "IDS/IPS", "Network Protocols"],
+                source: "LinkedIn",
+                postedDaysAgo: 2,
+                salaryRange: "8–15 LPA",
+                applyUrl: "https://www.hcltech.com/careers/network-security-engineer",
+                description: "Design and implement network security solutions. Configure firewalls and intrusion detection systems. Monitor network traffic for threats. Respond to security incidents."
+            },
+            {
+                id: 26,
+                title: "Software Test Engineer",
+                company: "Mindtree",
+                location: "Bangalore",
+                mode: "Remote",
+                experience: "0-1",
+                skills: ["Manual Testing", "Automation", "Selenium", "Test Cases"],
+                source: "Indeed",
+                postedDaysAgo: 0,
+                salaryRange: "4–7 LPA",
+                applyUrl: "https://www.mindtree.com/careers/test-engineer",
+                description: "Develop and execute test cases. Identify and report defects. Perform regression testing. Collaborate with development teams."
+            },
+            {
+                id: 27,
+                title: "Embedded Systems Engineer",
+                company: "L&T Technology Services",
+                location: "Chennai",
+                mode: "Onsite",
+                experience: "1-3",
+                skills: ["C", "C++", "RTOS", "Hardware", "Firmware"],
+                source: "Naukri",
+                postedDaysAgo: 1,
+                salaryRange: "7–12 LPA",
+                applyUrl: "https://www.lntts.com/embedded-engineer",
+                description: "Develop firmware for embedded systems. Work with hardware teams. Test real-time systems. Implement device drivers and communication protocols."
+            },
+            {
+                id: 28,
+                title: "Salesforce Developer",
+                company: "Persistent Systems",
+                location: "Pune",
+                mode: "Hybrid",
+                experience: "1-3",
+                skills: ["Apex", "Visualforce", "SOQL", "Integration"],
+                source: "LinkedIn",
+                postedDaysAgo: 4,
+                salaryRange: "9–16 LPA",
+                applyUrl: "https://www.persistent.com/salesforce-developer",
+                description: "Customize Salesforce CRM solutions. Develop Apex classes and triggers. Create Visualforce pages. Integrate with external systems."
+            },
+            {
+                id: 29,
+                title: "Big Data Engineer",
+                company: "Fractal Analytics",
+                location: "Gurgaon",
+                mode: "Remote",
+                experience: "3-5",
+                skills: ["Hadoop", "Spark", "Kafka", "Python", "SQL"],
+                source: "LinkedIn",
+                postedDaysAgo: 2,
+                salaryRange: "16–28 LPA",
+                applyUrl: "https://www.fractal.ai/big-data-engineer",
+                description: "Design big data processing pipelines. Work with Hadoop ecosystem. Implement data lakes. Optimize query performance for large datasets."
+            },
+            {
+                id: 30,
+                title: "Game Developer",
+                company: "Nazara Technologies",
+                location: "Mumbai",
+                mode: "Onsite",
+                experience: "1-3",
+                skills: ["Unity", "C#", "Game Design", "Animation"],
+                source: "Indeed",
+                postedDaysAgo: 0,
+                salaryRange: "6–11 LPA",
+                applyUrl: "https://www.nazara.com/game-developer",
+                description: "Develop mobile games using Unity engine. Implement game mechanics. Optimize performance for mobile devices. Collaborate with art and design teams."
+            },
+            {
+                id: 31,
+                title: "Solutions Architect",
+                company: "Mphasis",
+                location: "Bangalore",
+                mode: "Hybrid",
+                experience: "5+",
+                skills: ["Architecture", "Cloud", "Integration", "Consulting"],
+                source: "Naukri",
+                postedDaysAgo: 1,
+                salaryRange: "22–38 LPA",
+                applyUrl: "https://www.mphasis.com/solutions-architect",
+                description: "Design technical solutions for client requirements. Lead architecture discussions. Evaluate technology options. Provide guidance to development teams."
+            },
+            {
+                id: 32,
+                title: "Digital Marketing Specialist",
+                company: "Media.net",
+                location: "Mumbai",
+                mode: "Remote",
+                experience: "1-3",
+                skills: ["SEO", "SEM", "Analytics", "Campaigns"],
+                source: "LinkedIn",
+                postedDaysAgo: 3,
+                salaryRange: "5–10 LPA",
+                applyUrl: "https://www.media.net/digital-marketing-specialist",
+                description: "Plan and execute digital marketing campaigns. Optimize ad spend and ROI. Analyze campaign performance. Stay updated with marketing trends."
+            },
+            {
+                id: 33,
+                title: "IT Consultant",
+                company: "KPMG",
+                location: "Mumbai",
+                mode: "Hybrid",
+                experience: "3-5",
+                skills: ["Consulting", "Business Analysis", "Technology", "Strategy"],
+                source: "LinkedIn",
+                postedDaysAgo: 2,
+                salaryRange: "14–22 LPA",
+                applyUrl: "https://home.kpmg/in/en/home/careers/it-consultant.html",
+                description: "Advise clients on IT strategy and implementation. Assess business processes. Recommend technology solutions. Manage consulting engagements."
+            },
+            {
+                id: 34,
+                title: "Robotics Engineer",
+                company: "Talwalkars Better Value Fitness",
+                location: "Pune",
+                mode: "Onsite",
+                experience: "3-5",
+                skills: ["ROS", "C++", "Python", "Control Systems"],
+                source: "Indeed",
+                postedDaysAgo: 0,
+                salaryRange: "12–20 LPA",
+                applyUrl: "https://www.talwalkars.com/robotics-engineer",
+                description: "Design and develop robotic systems. Program control algorithms. Test robotic functionality. Collaborate with mechanical and electrical teams."
+            },
+            {
+                id: 35,
+                title: "AR/VR Developer",
+                company: "Samsung R&D Institute",
+                location: "Bangalore",
+                mode: "Hybrid",
+                experience: "2-4",
+                skills: ["Unity", "Unreal Engine", "ARCore", "ARKit"],
+                source: "Naukri",
+                postedDaysAgo: 1,
+                salaryRange: "14–24 LPA",
+                applyUrl: "https://research.samsung.com/careers/ar-vr-developer",
+                description: "Create immersive AR/VR experiences. Develop 3D environments. Optimize for performance. Work on cutting-edge display technologies."
+            },
+            {
+                id: 36,
+                title: "IoT Developer",
+                company: "Robert Bosch Engineering",
+                location: "Bangalore",
+                mode: "Onsite",
+                experience: "2-4",
+                skills: ["Embedded C", "MQTT", "Python", "Hardware"],
+                source: "LinkedIn",
+                postedDaysAgo: 4,
+                salaryRange: "10–18 LPA",
+                applyUrl: "https://www.bosch.in/corporate/careers/iot-developer",
+                description: "Develop IoT solutions for automotive and industrial applications. Connect devices to cloud platforms. Implement security measures. Test IoT systems."
+            },
+            {
+                id: 37,
+                title: "Computer Vision Engineer",
+                company: "Haptik",
+                location: "Mumbai",
+                mode: "Remote",
+                experience: "3-5",
+                skills: ["OpenCV", "Python", "Deep Learning", "Image Processing"],
+                source: "LinkedIn",
+                postedDaysAgo: 2,
+                salaryRange: "18–30 LPA",
+                applyUrl: "https://www.haptik.ai/computer-vision-engineer",
+                description: "Develop computer vision algorithms for AI applications. Work on facial recognition and object detection. Implement neural networks. Optimize for real-time performance."
+            },
+            {
+                id: 38,
+                title: "NLP Engineer",
+                company: "Gramener",
+                location: "Chennai",
+                mode: "Hybrid",
+                experience: "3-5",
+                skills: ["Python", "NLTK", "SpaCy", "Transformers", "Language Models"],
+                source: "Indeed",
+                postedDaysAgo: 0,
+                salaryRange: "16–26 LPA",
+                applyUrl: "https://www.gramener.com/nlp-engineer",
+                description: "Develop natural language processing solutions. Work on chatbots and text analytics. Implement language models. Improve text understanding systems."
+            },
+            {
+                id: 39,
+                title: "Site Reliability Engineer",
+                company: "Ola",
+                location: "Bangalore",
+                mode: "Onsite",
+                experience: "3-5",
+                skills: ["Linux", "Monitoring", "Automation", "Golang"],
+                source: "Naukri",
+                postedDaysAgo: 1,
+                salaryRange: "18–32 LPA",
+                applyUrl: "https://www.olacabs.com/join-us/sre",
+                description: "Ensure system reliability and performance. Implement monitoring solutions. Automate operational tasks. Respond to incidents and outages."
+            },
+            {
+                id: 40,
+                title: "Security Analyst",
+                company: "Deloitte",
+                location: "Hyderabad",
+                mode: "Hybrid",
+                experience: "2-4",
+                skills: ["Risk Assessment", "Compliance", "Forensics", "Vulnerability"],
+                source: "LinkedIn",
+                postedDaysAgo: 3,
+                salaryRange: "10–17 LPA",
+                applyUrl: "https://www2.deloitte.com/in/en/pages/careers/security-analyst.html",
+                description: "Conduct security assessments for clients. Identify vulnerabilities. Prepare security reports. Advise on risk mitigation strategies."
+            },
+            {
+                id: 41,
+                title: "Database Administrator",
+                company: "Hexaware Technologies",
+                location: "Mumbai",
+                mode: "Remote",
+                experience: "3-5",
+                skills: ["Oracle", "MySQL", "Performance Tuning", "Backup"],
+                source: "LinkedIn",
+                postedDaysAgo: 2,
+                salaryRange: "9–16 LPA",
+                applyUrl: "https://www.hexaware.com/database-administrator",
+                description: "Manage enterprise databases. Optimize performance. Ensure data security. Plan backup and recovery strategies."
+            },
+            {
+                id: 42,
+                title: "Technical Lead",
+                company: "Mindtree",
+                location: "Pune",
+                mode: "Hybrid",
+                experience: "5+",
+                skills: ["Leadership", "Architecture", "Team Management", "Development"],
+                source: "Indeed",
+                postedDaysAgo: 0,
+                salaryRange: "25–40 LPA",
+                applyUrl: "https://www.mindtree.com/technical-lead",
+                description: "Lead development teams. Make technical decisions. Review code quality. Mentor junior developers. Coordinate with stakeholders."
+            },
+            {
+                id: 43,
+                title: "AI Researcher",
+                company: "Microsoft",
+                location: "Hyderabad",
+                mode: "Onsite",
+                experience: "5+",
+                skills: ["Research", "ML", "Mathematics", "Publications"],
+                source: "LinkedIn",
+                postedDaysAgo: 1,
+                salaryRange: "30–50 LPA",
+                applyUrl: "https://careers.microsoft.com/ai-researcher",
+                description: "Conduct research in artificial intelligence. Publish papers in top conferences. Develop novel algorithms. Collaborate with academic institutions."
+            },
+            {
+                id: 44,
+                title: "Firmware Engineer",
+                company: "Texas Instruments",
+                location: "Bangalore",
+                mode: "Hybrid",
+                experience: "3-5",
+                skills: ["C", "Assembly", "Embedded Systems", "Debugging"],
+                source: "Naukri",
+                postedDaysAgo: 4,
+                salaryRange: "12–20 LPA",
+                applyUrl: "https://www.ti.com/careers/firmware-engineer",
+                description: "Develop firmware for semiconductor products. Optimize code for performance and power. Debug hardware-software interfaces. Validate functionality."
+            },
+            {
+                id: 45,
+                title: "Quality Assurance Manager",
+                company: "EPAM Systems",
+                location: "Pune",
+                mode: "Remote",
+                experience: "5+",
+                skills: ["QA Strategy", "Team Leadership", "Processes", "Automation"],
+                source: "LinkedIn",
+                postedDaysAgo: 2,
+                salaryRange: "20–35 LPA",
+                applyUrl: "https://www.epam.com/quality-assurance-manager",
+                description: "Lead QA teams and processes. Define quality metrics. Implement testing strategies. Ensure delivery of high-quality products."
+            },
+            {
+                id: 46,
+                title: "Mobile App Tester",
+                company: "QualiTest",
+                location: "Gurgaon",
+                mode: "Onsite",
+                experience: "1-3",
+                skills: ["Manual Testing", "Automation", "Appium", "Bug Reporting"],
+                source: "Indeed",
+                postedDaysAgo: 0,
+                salaryRange: "4–8 LPA",
+                applyUrl: "https://www.qualitestgroup.com/mobile-tester",
+                description: "Test mobile applications across devices. Report bugs and issues. Verify functionality and performance. Collaborate with development teams."
+            },
+            {
+                id: 47,
+                title: "DevSecOps Engineer",
+                company: "Accolite Digital",
+                location: "Noida",
+                mode: "Hybrid",
+                experience: "3-5",
+                skills: ["Security", "DevOps", "Automation", "Compliance"],
+                source: "LinkedIn",
+                postedDaysAgo: 1,
+                salaryRange: "14–24 LPA",
+                applyUrl: "https://www.accolite.com/devsecops-engineer",
+                description: "Integrate security into DevOps processes. Implement security scanning tools. Automate compliance checks. Secure CI/CD pipelines."
+            },
+            {
+                id: 48,
+                title: "Technical Recruiter",
+                company: "Knightsbridge Solutions",
+                location: "Mumbai",
+                mode: "Remote",
+                experience: "2-4",
+                skills: ["Recruitment", "Sourcing", "Interviewing", "HR Tech"],
+                source: "Naukri",
+                postedDaysAgo: 3,
+                salaryRange: "6–12 LPA",
+                applyUrl: "https://www.knightsbridgesolutions.com/technical-recruiter",
+                description: "Source and recruit technical talent. Conduct technical interviews. Partner with hiring managers. Understand tech roles and requirements."
+            },
+            {
+                id: 49,
+                title: "Chief Technology Officer",
+                company: "Unacademy",
+                location: "Bangalore",
+                mode: "Onsite",
+                experience: "10+",
+                skills: ["Leadership", "Strategy", "Innovation", "Architecture"],
+                source: "LinkedIn",
+                postedDaysAgo: 0,
+                salaryRange: "50–100 LPA",
+                applyUrl: "https://unacademy.com/careers/cto",
+                description: "Define technology vision for the organization. Lead engineering teams. Make strategic technology decisions. Drive innovation initiatives."
+            },
+            {
+                id: 50,
+                title: "Data Engineer",
+                company: "ShareChat",
+                location: "Bangalore",
+                mode: "Hybrid",
+                experience: "2-4",
+                skills: ["Spark", "Hadoop", "ETL", "Python", "SQL"],
+                source: "LinkedIn",
+                postedDaysAgo: 2,
+                salaryRange: "14–24 LPA",
+                applyUrl: "https://www.sharechat.com/data-engineer",
+                description: "Build data pipelines for content platform. Process large volumes of user data. Optimize data storage and retrieval. Support analytics teams."
+            },
+            {
+                id: 51,
+                title: "Backend Intern",
+                company: "Meesho",
+                location: "Bangalore",
+                mode: "Remote",
+                experience: "Fresher",
+                skills: ["Python", "Django", "REST APIs", "SQL"],
+                source: "Indeed",
+                postedDaysAgo: 1,
+                salaryRange: "₹25k–₹40k/month Internship",
+                applyUrl: "https://meesho.com/back-end-intern",
+                description: "Assist in developing backend services for e-commerce platform. Work on API development. Learn database design principles. Participate in code reviews."
+            },
+            {
+                id: 52,
+                title: "Frontend Developer",
+                company: "BrowserStack",
+                location: "Mumbai",
+                mode: "Hybrid",
+                experience: "2-4",
+                skills: ["React", "TypeScript", "CSS", "Testing"],
+                source: "Naukri",
+                postedDaysAgo: 4,
+                salaryRange: "16–26 LPA",
+                applyUrl: "https://www.browserstack.com/frontend-developer",
+                description: "Build developer tools interfaces. Optimize user experience for testing platform. Implement responsive designs. Ensure cross-browser compatibility."
+            },
+            {
+                id: 53,
+                title: "AI Product Manager",
+                company: "Uniphore Software Systems",
+                location: "Chennai",
+                mode: "Onsite",
+                experience: "4-6",
+                skills: ["Product Management", "AI", "ML", "Strategy"],
+                source: "LinkedIn",
+                postedDaysAgo: 2,
+                salaryRange: "22–35 LPA",
+                applyUrl: "https://www.uniphore.com/ai-product-manager",
+                description: "Define product roadmap for AI conversational solutions. Work with engineering teams. Understand customer requirements. Drive product launches."
+            },
+            {
+                id: 54,
+                title: "Information Security Officer",
+                company: "Axis Bank",
+                location: "Mumbai",
+                mode: "Onsite",
+                experience: "5+",
+                skills: ["Security", "Compliance", "Risk", "Banking"],
+                source: "LinkedIn",
+                postedDaysAgo: 0,
+                salaryRange: "20–35 LPA",
+                applyUrl: "https://www.axisbank.com/careers/info-security-officer",
+                description: "Protect banking systems from cyber threats. Ensure regulatory compliance. Implement security policies. Conduct risk assessments."
+            },
+            {
+                id: 55,
+                title: "Automation Test Engineer",
+                company: "ThoughtWorks",
+                location: "Pune",
+                mode: "Hybrid",
+                experience: "2-4",
+                skills: ["Selenium", "Cypress", "API Testing", "CI/CD"],
+                source: "Indeed",
+                postedDaysAgo: 1,
+                salaryRange: "10–18 LPA",
+                applyUrl: "https://www.thoughtworks.com/careers/automation-test-engineer",
+                description: "Develop automated test suites. Implement API and UI testing. Integrate with CI/CD pipelines. Maintain test frameworks."
+            },
+            {
+                id: 56,
+                title: "UX Researcher",
+                company: "Urban Company",
+                location: "Gurgaon",
+                mode: "Remote",
+                experience: "3-5",
+                skills: ["User Research", "Interviews", "Surveys", "Analytics"],
+                source: "LinkedIn",
+                postedDaysAgo: 3,
+                salaryRange: "12–20 LPA",
+                applyUrl: "https://www.urbancompany.com/ux-researcher",
+                description: "Conduct user research studies. Analyze user behavior patterns. Provide insights for product improvements. Create research reports."
+            },
+            {
+                id: 57,
+                title: "Principal Engineer",
+                company: "InMobi",
+                location: "Bangalore",
+                mode: "Onsite",
+                experience: "8+",
+                skills: ["Architecture", "Leadership", "Mentoring", "Innovation"],
+                source: "Naukri",
+                postedDaysAgo: 2,
+                salaryRange: "40–70 LPA",
+                applyUrl: "https://www.inmobi.com/principal-engineer",
+                description: "Define technical architecture for mobile advertising platform. Lead complex engineering initiatives. Mentor senior engineers. Drive technical innovation."
+            },
+            {
+                id: 58,
+                title: "Compliance Engineer",
+                company: "Protean eGov Technologies",
+                location: "Noida",
+                mode: "Hybrid",
+                experience: "3-5",
+                skills: ["Compliance", "Regulations", "Auditing", "Government"],
+                source: "LinkedIn",
+                postedDaysAgo: 0,
+                salaryRange: "8–14 LPA",
+                applyUrl: "https://www.proteanegov.com/compliance-engineer",
+                description: "Ensure software solutions meet government regulations. Conduct compliance audits. Implement security controls. Document compliance procedures."
+            },
+            {
+                id: 59,
+                title: "Data Visualization Specialist",
+                company: "Mu Sigma",
+                location: "Bangalore",
+                mode: "Onsite",
+                experience: "2-4",
+                skills: ["Tableau", "Power BI", "D3.js", "Analytics"],
+                source: "Indeed",
+                postedDaysAgo: 1,
+                salaryRange: "10–18 LPA",
+                applyUrl: "https://www.mu-sigma.com/data-visualization-specialist",
+                description: "Create compelling data visualizations. Build interactive dashboards. Present insights to stakeholders. Design visualization standards."
+            },
+            {
+                id: 60,
+                title: "Technical Trainer",
+                company: "NIIT Technologies",
+                location: "Gurgaon",
+                mode: "Hybrid",
+                experience: "3-5",
+                skills: ["Training", "Curriculum", "Technical", "Education"],
+                source: "LinkedIn",
+                postedDaysAgo: 4,
+                salaryRange: "7–13 LPA",
+                applyUrl: "https://www.niit-tech.com/technical-trainer",
+                description: "Design and deliver technical training programs. Create course materials. Train employees on new technologies. Assess learning outcomes."
+            }
+        ];
+
+        // Define routes
+        const routes = {
+            '/': renderLanding,
+            '/dashboard': renderDashboard,
+            '/settings': renderSettings,
+            '/saved': renderSaved,
+            '/digest': renderDigest,
+            '/proof': renderProof
+        };
+
+        // Store saved jobs in localStorage
+        function getSavedJobs() {
+            const savedJobsStr = localStorage.getItem('savedJobs');
+            return savedJobsStr ? JSON.parse(savedJobsStr) : [];
+        }
+
+        function saveJob(jobId) {
+            let savedJobs = getSavedJobs();
+            if (!savedJobs.includes(jobId)) {
+                savedJobs.push(jobId);
+                localStorage.setItem('savedJobs', JSON.stringify(savedJobs));
+            }
+        }
+
+        function removeSavedJob(jobId) {
+            let savedJobs = getSavedJobs();
+            savedJobs = savedJobs.filter(id => id !== jobId);
+            localStorage.setItem('savedJobs', JSON.stringify(savedJobs));
+        }
+
+        function isJobSaved(jobId) {
+            const savedJobs = getSavedJobs();
+            return savedJobs.includes(jobId);
+        }
+
+        // Get and save preferences
+        function getPreferences() {
+            const prefsStr = localStorage.getItem('jobTrackerPreferences');
+            return prefsStr ? JSON.parse(prefsStr) : null;
+        }
+
+        function savePreferences(preferences) {
+            localStorage.setItem('jobTrackerPreferences', JSON.stringify(preferences));
+        }
+
+        // Calculate match score
+        function calculateMatchScore(job, preferences) {
+            if (!preferences) return 0;
+
+            let score = 0;
+
+            // Parse role keywords
+            const roleKeywords = preferences.roleKeywords ? 
+                preferences.roleKeywords.split(',').map(k => k.trim().toLowerCase()) : [];
+
+            // Parse user skills
+            const userSkills = preferences.skills ? 
+                preferences.skills.split(',').map(s => s.trim().toLowerCase()) : [];
+
+            // +25 if any roleKeyword appears in job.title (case-insensitive)
+            if (roleKeywords.length > 0) {
+                for (const keyword of roleKeywords) {
+                    if (job.title.toLowerCase().includes(keyword)) {
+                        score += 25;
+                        break;
+                    }
+                }
+            }
+
+            // +15 if any roleKeyword appears in job.description
+            if (roleKeywords.length > 0) {
+                for (const keyword of roleKeywords) {
+                    if (job.description.toLowerCase().includes(keyword)) {
+                        score += 15;
+                        break;
+                    }
+                }
+            }
+
+            // +15 if job.location matches preferredLocations
+            if (preferences.preferredLocations && preferences.preferredLocations.length > 0) {
+                if (preferences.preferredLocations.includes(job.location)) {
+                    score += 15;
+                }
+            }
+
+            // +10 if job.mode matches preferredMode
+            if (preferences.preferredMode && preferences.preferredMode.length > 0) {
+                if (preferences.preferredMode.includes(job.mode)) {
+                    score += 10;
+                }
+            }
+
+            // +10 if job.experience matches experienceLevel
+            if (preferences.experienceLevel && job.experience.includes(preferences.experienceLevel.replace('+', ''))) {
+                score += 10;
+            }
+
+            // +15 if overlap between job.skills and user.skills (any match)
+            if (userSkills.length > 0) {
+                const jobSkillsLower = job.skills.map(s => s.toLowerCase());
+                for (const userSkill of userSkills) {
+                    if (jobSkillsLower.includes(userSkill)) {
+                        score += 15;
+                        break;
+                    }
+                }
+            }
+
+            // +5 if postedDaysAgo <= 2
+            if (job.postedDaysAgo <= 2) {
+                score += 5;
+            }
+
+            // +5 if source is LinkedIn
+            if (job.source === 'LinkedIn') {
+                score += 5;
+            }
+
+            // Cap score at 100
+            return Math.min(score, 100);
+        }
+
+        // Get match score class
+        function getMatchScoreClass(score) {
+            if (score >= 80) return 'match-score-high';
+            if (score >= 60) return 'match-score-medium';
+            if (score >= 40) return 'match-score-low';
+            return 'match-score-very-low';
+        }
+
+        // Get match score text
+        function getMatchScoreText(score) {
+            if (score >= 80) return `${score}/100`;
+            if (score >= 60) return `${score}/100`;
+            if (score >= 40) return `${score}/100`;
+            return `${score}/100`;
+        }
+
+        // Landing page renderer
+        function renderLanding() {
+            return `
+                <div class="landing-page">
+                    <h1 class="landing-headline">Stop Missing The Right Jobs.</h1>
+                    <p class="landing-subtext">Precision-matched job discovery delivered daily at 9AM.</p>
+                    <a href="#/settings" class="cta-button" id="ctaButton">Start Tracking</a>
+                </div>
+            `;
+        }
+
+        // Dashboard page renderer
+        function renderDashboard() {
+            const preferences = getPreferences();
+            const showOnlyMatches = document.getElementById('showOnlyMatchesToggle')?.checked || false;
+            const minMatchScore = preferences?.minMatchScore || 40;
+            
+            // Check if preferences exist
+            const hasPreferences = preferences && Object.keys(preferences).length > 0;
+            
+            let preferenceBanner = '';
+            if (!hasPreferences) {
+                preferenceBanner = `
+                    <div class="preference-banner">
+                        Set your preferences to activate intelligent matching.
+                    </div>
+                `;
+            }
+            
+            // Filter jobs based on filters
+            const filters = {
+                keyword: document.getElementById('keywordFilter')?.value || '',
+                location: document.getElementById('locationFilter')?.value || '',
+                mode: document.getElementById('modeFilter')?.value || '',
+                experience: document.getElementById('experienceFilter')?.value || '',
+                source: document.getElementById('sourceFilter')?.value || ''
+            };
+            
+            let filteredJobs = [...jobDataset];
+            
+            // Apply keyword filter
+            if (filters.keyword) {
+                const keyword = filters.keyword.toLowerCase();
+                filteredJobs = filteredJobs.filter(job => 
+                    job.title.toLowerCase().includes(keyword) || 
+                    job.company.toLowerCase().includes(keyword)
+                );
+            }
+            
+            // Apply location filter
+            if (filters.location) {
+                filteredJobs = filteredJobs.filter(job => job.location === filters.location);
+            }
+            
+            // Apply mode filter
+            if (filters.mode) {
+                filteredJobs = filteredJobs.filter(job => job.mode === filters.mode);
+            }
+            
+            // Apply experience filter
+            if (filters.experience) {
+                filteredJobs = filteredJobs.filter(job => job.experience === filters.experience);
+            }
+            
+            // Apply source filter
+            if (filters.source) {
+                filteredJobs = filteredJobs.filter(job => job.source === filters.source);
+            }
+            
+            // Calculate match scores for all jobs
+            const jobsWithScores = filteredJobs.map(job => {
+                const matchScore = calculateMatchScore(job, preferences);
+                return {...job, matchScore};
+            });
+            
+            // Apply match threshold if toggle is on
+            let finalJobs = jobsWithScores;
+            if (showOnlyMatches && hasPreferences) {
+                finalJobs = jobsWithScores.filter(job => job.matchScore >= minMatchScore);
+            }
+            
+            // Apply sorting
+            const sortValue = document.getElementById('sortFilter')?.value || 'latest';
+            finalJobs.sort((a, b) => {
+                switch(sortValue) {
+                    case 'match':
+                        return b.matchScore - a.matchScore;
+                    case 'salary':
+                        // Extract numeric value from salary string for comparison
+                        const getNumericSalary = (str) => {
+                            const match = str.match(/(\d+(?:\.\d+)?)/);
+                            return match ? parseFloat(match[0]) : 0;
+                        };
+                        return getNumericSalary(b.salaryRange) - getNumericSalary(a.salaryRange);
+                    case 'latest':
+                    default:
+                        return a.postedDaysAgo - b.postedDaysAgo;
+                }
+            });
+
+            let jobsHtml = '';
+            
+            if (finalJobs.length === 0 && hasPreferences) {
+                jobsHtml = `
+                    <div class="no-results">
+                        <p>No roles match your criteria. Adjust filters or lower threshold.</p>
+                    </div>
+                `;
+            } else if (finalJobs.length === 0 && !hasPreferences) {
+                jobsHtml = `
+                    <div class="no-results">
+                        <p>Set your preferences to see matched jobs.</p>
+                    </div>
+                `;
+            } else {
+                jobsHtml = finalJobs.map(job => `
+                    <div class="job-card">
+                        <div class="job-header">
+                            <div>
+                                <h3 class="job-title">${job.title} <span class="match-score ${getMatchScoreClass(job.matchScore)}">${getMatchScoreText(job.matchScore)}</span></h3>
+                                <p class="job-company">${job.company}</p>
+                            </div>
+                            <span class="source-badge">${job.source}</span>
+                        </div>
+                        
+                        <div class="job-details">
+                            <span class="job-location-mode">
+                                ${job.location} • ${job.mode}
+                            </span>
+                            <span class="job-experience">
+                                ${job.experience} Exp
+                            </span>
+                            <span class="job-salary">
+                                ${job.salaryRange}
+                            </span>
+                        </div>
+                        
+                        <div class="posted-time">
+                            ${job.postedDaysAgo === 0 ? 'Posted today' : `Posted ${job.postedDaysAgo} day${job.postedDaysAgo > 1 ? 's' : ''} ago`}
+                        </div>
+                        
+                        <div class="job-actions">
+                            <button class="btn-job btn-view" onclick="openJobModal(${job.id})">View</button>
+                            <button class="btn-job btn-${isJobSaved(job.id) ? 'save-active' : 'save'}" 
+                                    onclick="${isJobSaved(job.id) ? 'removeSavedJob(' + job.id + '); updateJobCard(' + job.id + ')' : 'saveJob(' + job.id + '); updateJobCard(' + job.id + ')'}">
+                                ${isJobSaved(job.id) ? 'Saved' : 'Save'}
+                            </button>
+                            <a href="${job.applyUrl}" target="_blank" class="btn-job btn-apply">Apply</a>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            return `
+                <div class="dashboard-page">
+                    <h1 class="dashboard-title">Dashboard</h1>
+                    
+                    ${preferenceBanner}
+                    
+                    <div class="toggle-container">
+                        <label class="toggle-label">Show only jobs above my threshold</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="showOnlyMatchesToggle" onchange="applyFilters()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="filter-bar">
+                        <div class="filter-group">
+                            <label class="filter-label">Keyword</label>
+                            <input type="text" id="keywordFilter" class="filter-input" placeholder="Title, Company..." oninput="applyFilters()">
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Location</label>
+                            <select id="locationFilter" class="filter-select" onchange="applyFilters()">
+                                <option value="">All Locations</option>
+                                <option value="Bangalore">Bangalore</option>
+                                <option value="Mumbai">Mumbai</option>
+                                <option value="Hyderabad">Hyderabad</option>
+                                <option value="Pune">Pune</option>
+                                <option value="Chennai">Chennai</option>
+                                <option value="Gurgaon">Gurgaon</option>
+                                <option value="Noida">Noida</option>
+                                <option value="Delhi">Delhi</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Mode</label>
+                            <select id="modeFilter" class="filter-select" onchange="applyFilters()">
+                                <option value="">All Modes</option>
+                                <option value="Remote">Remote</option>
+                                <option value="Hybrid">Hybrid</option>
+                                <option value="Onsite">Onsite</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Experience</label>
+                            <select id="experienceFilter" class="filter-select" onchange="applyFilters()">
+                                <option value="">All Levels</option>
+                                <option value="Fresher">Fresher</option>
+                                <option value="0-1">0-1 Years</option>
+                                <option value="1-3">1-3 Years</option>
+                                <option value="3-5">3-5 Years</option>
+                                <option value="5+">5+ Years</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Source</label>
+                            <select id="sourceFilter" class="filter-select" onchange="applyFilters()">
+                                <option value="">All Sources</option>
+                                <option value="LinkedIn">LinkedIn</option>
+                                <option value="Naukri">Naukri</option>
+                                <option value="Indeed">Indeed</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            
