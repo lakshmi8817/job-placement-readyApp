@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Notification Tracker - Complete with Scoring</title>
+    <title>Job Notification Tracker - Complete with Status Tracking</title>
     <link rel="stylesheet" href="job-notification-design-system.css">
     <style>
         body {
@@ -353,14 +353,13 @@
             padding: var(--spacing-md);
             margin-bottom: var(--spacing-lg);
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: var(--spacing-md);
         }
 
         @media (max-width: 768px) {
             .filter-bar {
                 grid-template-columns: 1fr;
-                grid-template-rows: auto auto auto auto;
             }
         }
 
@@ -501,6 +500,70 @@
         .posted-time {
             color: var(--text-tertiary);
             font-size: var(--font-size-xs);
+        }
+
+        /* Status Badge Styles */
+        .status-badge {
+            display: inline-block;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-xs);
+            font-weight: 500;
+            margin-left: var(--spacing-sm);
+        }
+
+        .status-not-applied {
+            background-color: var(--border-medium);
+            color: var(--text-primary);
+        }
+
+        .status-applied {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .status-rejected {
+            background-color: #F44336;
+            color: white;
+        }
+
+        .status-selected {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        /* Status Button Group */
+        .status-buttons {
+            display: flex;
+            gap: var(--spacing-xs);
+            margin-top: var(--spacing-sm);
+        }
+
+        .status-btn {
+            font-family: var(--font-body);
+            font-size: var(--font-size-xs);
+            line-height: var(--line-height-tight);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-medium);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .status-btn.active {
+            border-color: var(--accent-primary);
+            background-color: var(--accent-primary);
+            color: white;
+        }
+
+        .status-btn:hover:not(.active) {
+            background-color: var(--border-light);
         }
 
         .job-actions {
@@ -662,6 +725,35 @@
             text-align: center;
         }
 
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-medium);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md) var(--spacing-lg);
+            box-shadow: 0 4px 12px var(--shadow-light);
+            z-index: 1001;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all var(--transition-normal);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast.success {
+            border-left: 4px solid #4CAF50;
+        }
+
+        .toast.error {
+            border-left: 4px solid #F44336;
+        }
+
         /* Digest Page Styles */
         .digest-page {
             padding: var(--spacing-xl) var(--spacing-lg);
@@ -675,23 +767,214 @@
             text-align: center;
         }
 
-        /* Proof Page Styles */
-        .proof-page {
-            padding: var(--spacing-xl) var(--spacing-lg);
+        .digest-subtitle {
+            color: var(--text-secondary);
+            font-size: var(--font-size-lg);
             text-align: center;
+            margin-bottom: var(--spacing-lg);
         }
 
-        .proof-title {
+        .digest-card {
+            background-color: white;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            margin: 0 auto;
+            max-width: 720px;
+            box-shadow: 0 2px 8px var(--shadow-light);
+        }
+
+        .digest-header {
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .digest-header h2 {
             font-family: var(--font-heading);
-            font-size: var(--font-size-3xl);
+            font-size: var(--font-size-2xl);
             color: var(--text-primary);
+            margin: 0 0 var(--spacing-sm) 0;
+        }
+
+        .digest-header p {
+            color: var(--text-secondary);
+            margin: 0;
+            font-size: var(--font-size-base);
+        }
+
+        .digest-jobs {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .digest-job {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
             margin-bottom: var(--spacing-md);
         }
 
-        .proof-subtext {
+        .digest-job-title {
+            font-family: var(--font-heading);
+            font-size: var(--font-size-lg);
+            color: var(--text-primary);
+            margin: 0 0 var(--spacing-xs) 0;
+        }
+
+        .digest-job-company {
+            font-family: var(--font-body);
+            font-size: var(--font-size-base);
+            color: var(--text-secondary);
+            margin: 0 0 var(--spacing-xs) 0;
+            font-weight: 500;
+        }
+
+        .digest-job-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+
+        .digest-job-match {
+            display: inline-block;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-xs);
+            font-weight: 500;
+            margin-left: var(--spacing-sm);
+        }
+
+        .digest-job-actions {
+            text-align: center;
+            margin-top: var(--spacing-md);
+        }
+
+        .digest-btn {
+            background-color: var(--accent-primary);
+            color: white;
+            border: 1px solid var(--accent-primary);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            text-decoration: none;
+            display: inline-block;
+            margin: 0 var(--spacing-xs);
+        }
+
+        .digest-btn:hover {
+            background-color: var(--accent-primary-hover);
+            border-color: var(--accent-primary-hover);
+        }
+
+        .digest-footer {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+            padding-top: var(--spacing-md);
+            border-top: 1px solid var(--border-light);
+            margin-top: var(--spacing-lg);
+        }
+
+        .digest-actions {
+            text-align: center;
+            margin: var(--spacing-lg) 0;
+        }
+
+        .digest-btn-action {
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-medium);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: var(--font-size-base);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            text-decoration: none;
+            display: inline-block;
+            margin: 0 var(--spacing-xs);
+        }
+
+        .digest-btn-action:hover {
+            background-color: var(--border-light);
+        }
+
+        .digest-blocking-message {
+            text-align: center;
+            padding: var(--spacing-xl) var(--spacing-lg);
             color: var(--text-secondary);
             font-size: var(--font-size-lg);
             line-height: var(--line-height-normal);
+        }
+
+        .simulation-note {
+            text-align: center;
+            color: var(--text-tertiary);
+            font-size: var(--font-size-sm);
+            margin-top: var(--spacing-sm);
+        }
+
+        /* Recent Status Updates Section */
+        .recent-updates-section {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            margin: var(--spacing-lg) 0;
+        }
+
+        .recent-updates-title {
+            font-family: var(--font-heading);
+            font-size: var(--font-size-xl);
+            color: var(--text-primary);
+            margin-top: 0;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .recent-update-item {
+            padding: var(--spacing-sm);
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .recent-update-item:last-child {
+            border-bottom: none;
+        }
+
+        .recent-update-job {
+            font-family: var(--font-body);
+            font-weight: 500;
+        }
+
+        .recent-update-status {
+            font-family: var(--font-body);
+            font-weight: 500;
+        }
+
+        .status-not-applied-update {
+            color: var(--text-secondary);
+        }
+
+        .status-applied-update {
+            color: #2196F3;
+        }
+
+        .status-rejected-update {
+            color: #F44336;
+        }
+
+        .status-selected-update {
+            color: #4CAF50;
         }
 
         /* No Results Message */
@@ -728,6 +1011,186 @@
             .job-actions {
                 flex-direction: column;
             }
+            
+            .status-buttons {
+                flex-wrap: wrap;
+            }
+        }
+
+        /* Test Checklist Page */
+        .test-checklist-page {
+            padding: var(--spacing-xl) var(--spacing-lg);
+        }
+
+        .test-title {
+            font-family: var(--font-heading);
+            font-size: var(--font-size-3xl);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .test-summary {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .test-summary h2 {
+            font-family: var(--font-heading);
+            font-size: var(--font-size-xl);
+            color: var(--text-primary);
+            margin: 0 0 var(--spacing-md) 0;
+        }
+
+        .test-summary .warning {
+            color: #F44336;
+            font-weight: 500;
+        }
+
+        .test-summary .success {
+            color: #4CAF50;
+            font-weight: 500;
+        }
+
+        .tests-container {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .test-item {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .test-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .test-checkbox-container {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+            cursor: pointer;
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            transition: background-color var(--transition-fast);
+        }
+
+        .test-checkbox-container:hover {
+            background-color: var(--bg-tertiary);
+        }
+
+        .test-checkbox {
+            margin: 0;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+
+        .test-label {
+            flex: 1;
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height-normal);
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted var(--text-tertiary);
+            color: var(--text-tertiary);
+            cursor: help;
+            font-size: var(--font-size-xs);
+            margin-left: var(--spacing-xs);
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--bg-tertiary);
+            color: var(--text-secondary);
+            text-align: center;
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-sm);
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: var(--font-size-sm);
+            font-family: var(--font-body);
+            border: 1px solid var(--border-medium);
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .test-actions {
+            text-align: center;
+            margin-top: var(--spacing-lg);
+        }
+
+        /* Ship Page */
+        .ship-page {
+            padding: var(--spacing-xl) var(--spacing-lg);
+            text-align: center;
+        }
+
+        .ship-title {
+            font-family: var(--font-heading);
+            font-size: var(--font-size-3xl);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .ship-locked {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-xl);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .ship-ready {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-xl);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .ship-ready h2 {
+            color: #4CAF50;
+            font-family: var(--font-heading);
+            font-size: var(--font-size-2xl);
+            margin-top: 0;
+        }
+
+        .ship-locked h2 {
+            color: #F44336;
+            font-family: var(--font-heading);
+            font-size: var(--font-size-2xl);
+            margin-top: 0;
+        }
+
+        .ship-actions {
+            margin-top: var(--spacing-lg);
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: center;
         }
     </style>
 </head>
@@ -741,6 +1204,7 @@
                 <li><a href="#/digest" class="nav-link" data-route="/digest">Digest</a></li>
                 <li><a href="#/settings" class="nav-link" data-route="/settings">Settings</a></li>
                 <li><a href="#/proof" class="nav-link" data-route="/proof">Proof</a></li>
+                <li><a href="#/jt/07-test" class="nav-link" data-route="/jt/07-test">Test</a></li>
             </ul>
         </div>
 
@@ -753,9 +1217,13 @@
                 <li><a href="#/digest" class="mobile-nav-link" data-route="/digest">Digest</a></li>
                 <li><a href="#/settings" class="mobile-nav-link" data-route="/settings">Settings</a></li>
                 <li><a href="#/proof" class="mobile-nav-link" data-route="/proof">Proof</a></li>
+                <li><a href="#/jt/07-test" class="mobile-nav-link" data-route="/jt/07-test">Test</a></li>
             </ul>
         </div>
     </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
 
     <!-- Main Content Area -->
     <div class="page-container" id="mainContent">
@@ -1633,7 +2101,9 @@
             '/settings': renderSettings,
             '/saved': renderSaved,
             '/digest': renderDigest,
-            '/proof': renderProof
+            '/proof': renderProof,
+            '/jt/07-test': renderTestChecklist,
+            '/jt/08-ship': renderShipPage
         };
 
         // Store saved jobs in localStorage
@@ -1669,6 +2139,46 @@
 
         function savePreferences(preferences) {
             localStorage.setItem('jobTrackerPreferences', JSON.stringify(preferences));
+        }
+
+        // Get and save job status
+        function getJobStatus(jobId) {
+            const statusMap = getJobStatusMap();
+            return statusMap[jobId] || 'Not Applied';
+        }
+
+        function setJobStatus(jobId, status) {
+            const statusMap = getJobStatusMap();
+            statusMap[jobId] = status;
+            localStorage.setItem('jobTrackerStatus', JSON.stringify(statusMap));
+            
+            // Also record the status update with timestamp
+            const updates = getRecentStatusUpdates();
+            updates.push({
+                jobId: jobId,
+                status: status,
+                timestamp: new Date().toISOString(),
+                jobTitle: jobDataset.find(job => job.id === jobId)?.title || 'Unknown Job',
+                company: jobDataset.find(job => job.id === jobId)?.company || 'Unknown Company'
+            });
+            // Keep only the last 10 updates
+            if (updates.length > 10) {
+                updates.splice(0, updates.length - 10);
+            }
+            localStorage.setItem('jobTrackerStatusUpdates', JSON.stringify(updates));
+            
+            // Show toast notification
+            showToast(`Status updated: ${status}`, 'success');
+        }
+
+        function getJobStatusMap() {
+            const statusStr = localStorage.getItem('jobTrackerStatus');
+            return statusStr ? JSON.parse(statusStr) : {};
+        }
+
+        function getRecentStatusUpdates() {
+            const updatesStr = localStorage.getItem('jobTrackerStatusUpdates');
+            return updatesStr ? JSON.parse(updatesStr) : [];
         }
 
         // Calculate match score
@@ -1740,230 +2250,155 @@
                 score += 5;
             }
 
-            // +5 if source is LinkedIn
-            if (job.source === 'LinkedIn') {
-                score += 5;
+            return score;
+        }
+
+        // Render status badge
+        function renderStatusBadge(jobId) {
+            const status = getJobStatus(jobId);
+            let badgeClass = 'status-badge ';
+            
+            switch(status) {
+                case 'Applied':
+                    badgeClass += 'status-applied';
+                    break;
+                case 'Rejected':
+                    badgeClass += 'status-rejected';
+                    break;
+                case 'Selected':
+                    badgeClass += 'status-selected';
+                    break;
+                default:
+                    badgeClass += 'status-not-applied';
+                    break;
             }
-
-            // Cap score at 100
-            return Math.min(score, 100);
+            
+            return `<span class="${badgeClass}">${status}</span>`;
         }
 
-        // Get match score class
-        function getMatchScoreClass(score) {
-            if (score >= 80) return 'match-score-high';
-            if (score >= 60) return 'match-score-medium';
-            if (score >= 40) return 'match-score-low';
-            return 'match-score-very-low';
-        }
-
-        // Get match score text
-        function getMatchScoreText(score) {
-            if (score >= 80) return `${score}/100`;
-            if (score >= 60) return `${score}/100`;
-            if (score >= 40) return `${score}/100`;
-            return `${score}/100`;
-        }
-
-        // Landing page renderer
-        function renderLanding() {
+        // Render status buttons
+        function renderStatusButtons(jobId) {
+            const currentStatus = getJobStatus(jobId);
+            
             return `
-                <div class="landing-page">
-                    <h1 class="landing-headline">Stop Missing The Right Jobs.</h1>
-                    <p class="landing-subtext">Precision-matched job discovery delivered daily at 9AM.</p>
-                    <a href="#/settings" class="cta-button" id="ctaButton">Start Tracking</a>
+                <div class="status-buttons">
+                    <button class="status-btn ${currentStatus === 'Not Applied' ? 'active' : ''}" onclick="setJobStatus(${jobId}, 'Not Applied')">Not Applied</button>
+                    <button class="status-btn ${currentStatus === 'Applied' ? 'active' : ''}" onclick="setJobStatus(${jobId}, 'Applied')">Applied</button>
+                    <button class="status-btn ${currentStatus === 'Rejected' ? 'active' : ''}" onclick="setJobStatus(${jobId}, 'Rejected')">Rejected</button>
+                    <button class="status-btn ${currentStatus === 'Selected' ? 'active' : ''}" onclick="setJobStatus(${jobId}, 'Selected')">Selected</button>
                 </div>
             `;
         }
 
-        // Dashboard page renderer
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            
+            setTimeout(() => {
+                toast.className = 'toast';
+            }, 3000);
+        }
+
+        // Apply filters to jobs
+        function applyFilters(jobs, filters) {
+            return jobs.filter(job => {
+                // Check keyword filter
+                if (filters.keyword && !job.title.toLowerCase().includes(filters.keyword.toLowerCase()) && 
+                    !job.description.toLowerCase().includes(filters.keyword.toLowerCase())) {
+                    return false;
+                }
+                
+                // Check location filter
+                if (filters.location && !job.location.toLowerCase().includes(filters.location.toLowerCase())) {
+                    return false;
+                }
+                
+                // Check mode filter
+                if (filters.mode && filters.mode !== 'All' && job.mode !== filters.mode) {
+                    return false;
+                }
+                
+                // Check experience filter
+                if (filters.experience && filters.experience !== 'All' && job.experience !== filters.experience) {
+                    return false;
+                }
+                
+                // Check source filter
+                if (filters.source && filters.source !== 'All' && job.source !== filters.source) {
+                    return false;
+                }
+                
+                // Check match threshold filter
+                const preferences = getPreferences();
+                if (preferences && filters.matchThreshold && filters.matchThreshold !== 'All') {
+                    const matchScore = calculateMatchScore(job, preferences);
+                    const threshold = parseInt(filters.matchThreshold);
+                    if (matchScore < threshold) {
+                        return false;
+                    }
+                }
+                
+                // Check status filter
+                if (filters.status && filters.status !== 'All') {
+                    const jobStatus = getJobStatus(job.id);
+                    if (jobStatus !== filters.status) {
+                        return false;
+                    }
+                }
+                
+                return true;
+            });
+        }
+
+        // Render dashboard page
         function renderDashboard() {
             const preferences = getPreferences();
-            const showOnlyMatches = document.getElementById('showOnlyMatchesToggle')?.checked || false;
-            const minMatchScore = preferences?.minMatchScore || 40;
-            
-            // Check if preferences exist
-            const hasPreferences = preferences && Object.keys(preferences).length > 0;
-            
-            let preferenceBanner = '';
-            if (!hasPreferences) {
-                preferenceBanner = `
-                    <div class="preference-banner">
-                        Set your preferences to activate intelligent matching.
-                    </div>
-                `;
-            }
-            
-            // Filter jobs based on filters
-            const filters = {
-                keyword: document.getElementById('keywordFilter')?.value || '',
-                location: document.getElementById('locationFilter')?.value || '',
-                mode: document.getElementById('modeFilter')?.value || '',
-                experience: document.getElementById('experienceFilter')?.value || '',
-                source: document.getElementById('sourceFilter')?.value || ''
-            };
-            
-            let filteredJobs = [...jobDataset];
-            
-            // Apply keyword filter
-            if (filters.keyword) {
-                const keyword = filters.keyword.toLowerCase();
-                filteredJobs = filteredJobs.filter(job => 
-                    job.title.toLowerCase().includes(keyword) || 
-                    job.company.toLowerCase().includes(keyword)
-                );
-            }
-            
-            // Apply location filter
-            if (filters.location) {
-                filteredJobs = filteredJobs.filter(job => job.location === filters.location);
-            }
-            
-            // Apply mode filter
-            if (filters.mode) {
-                filteredJobs = filteredJobs.filter(job => job.mode === filters.mode);
-            }
-            
-            // Apply experience filter
-            if (filters.experience) {
-                filteredJobs = filteredJobs.filter(job => job.experience === filters.experience);
-            }
-            
-            // Apply source filter
-            if (filters.source) {
-                filteredJobs = filteredJobs.filter(job => job.source === filters.source);
-            }
-            
-            // Calculate match scores for all jobs
-            const jobsWithScores = filteredJobs.map(job => {
-                const matchScore = calculateMatchScore(job, preferences);
-                return {...job, matchScore};
-            });
-            
-            // Apply match threshold if toggle is on
-            let finalJobs = jobsWithScores;
-            if (showOnlyMatches && hasPreferences) {
-                finalJobs = jobsWithScores.filter(job => job.matchScore >= minMatchScore);
-            }
-            
-            // Apply sorting
-            const sortValue = document.getElementById('sortFilter')?.value || 'latest';
-            finalJobs.sort((a, b) => {
-                switch(sortValue) {
-                    case 'match':
-                        return b.matchScore - a.matchScore;
-                    case 'salary':
-                        // Extract numeric value from salary string for comparison
-                        const getNumericSalary = (str) => {
-                            const match = str.match(/(\d+(?:\.\d+)?)/);
-                            return match ? parseFloat(match[0]) : 0;
-                        };
-                        return getNumericSalary(b.salaryRange) - getNumericSalary(a.salaryRange);
-                    case 'latest':
-                    default:
-                        return a.postedDaysAgo - b.postedDaysAgo;
-                }
-            });
-
-            let jobsHtml = '';
-            
-            if (finalJobs.length === 0 && hasPreferences) {
-                jobsHtml = `
-                    <div class="no-results">
-                        <p>No roles match your criteria. Adjust filters or lower threshold.</p>
-                    </div>
-                `;
-            } else if (finalJobs.length === 0 && !hasPreferences) {
-                jobsHtml = `
-                    <div class="no-results">
-                        <p>Set your preferences to see matched jobs.</p>
-                    </div>
-                `;
-            } else {
-                jobsHtml = finalJobs.map(job => `
-                    <div class="job-card">
-                        <div class="job-header">
-                            <div>
-                                <h3 class="job-title">${job.title} <span class="match-score ${getMatchScoreClass(job.matchScore)}">${getMatchScoreText(job.matchScore)}</span></h3>
-                                <p class="job-company">${job.company}</p>
-                            </div>
-                            <span class="source-badge">${job.source}</span>
-                        </div>
-                        
-                        <div class="job-details">
-                            <span class="job-location-mode">
-                                ${job.location} • ${job.mode}
-                            </span>
-                            <span class="job-experience">
-                                ${job.experience} Exp
-                            </span>
-                            <span class="job-salary">
-                                ${job.salaryRange}
-                            </span>
-                        </div>
-                        
-                        <div class="posted-time">
-                            ${job.postedDaysAgo === 0 ? 'Posted today' : `Posted ${job.postedDaysAgo} day${job.postedDaysAgo > 1 ? 's' : ''} ago`}
-                        </div>
-                        
-                        <div class="job-actions">
-                            <button class="btn-job btn-view" onclick="openJobModal(${job.id})">View</button>
-                            <button class="btn-job btn-${isJobSaved(job.id) ? 'save-active' : 'save'}" 
-                                    onclick="${isJobSaved(job.id) ? 'removeSavedJob(' + job.id + '); updateJobCard(' + job.id + ')' : 'saveJob(' + job.id + '); updateJobCard(' + job.id + ')'}">
-                                ${isJobSaved(job.id) ? 'Saved' : 'Save'}
-                            </button>
-                            <a href="${job.applyUrl}" target="_blank" class="btn-job btn-apply">Apply</a>
-                        </div>
-                    </div>
-                `).join('');
+            if (!preferences) {
+                window.location.hash = '#/settings';
+                return;
             }
 
-            return `
+            let currentFilters = {};
+            
+            const content = `
                 <div class="dashboard-page">
-                    <h1 class="dashboard-title">Dashboard</h1>
+                    <h1 class="dashboard-title">Job Dashboard</h1>
                     
-                    ${preferenceBanner}
-                    
-                    <div class="toggle-container">
-                        <label class="toggle-label">Show only jobs above my threshold</label>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="showOnlyMatchesToggle" onchange="applyFilters()">
-                            <span class="slider"></span>
-                        </label>
+                    <div class="preference-banner">
+                        <p>Your preferences: ${preferences.roleKeywords || 'No keywords'}, ${preferences.preferredLocations?.join(', ') || 'No locations'}, ${preferences.experienceLevel || 'No experience level'}</p>
+                        <div class="toggle-container">
+                            <span class="toggle-label">Auto-refresh:</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="autoRefreshToggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
                     </div>
                     
                     <div class="filter-bar">
                         <div class="filter-group">
                             <label class="filter-label">Keyword</label>
-                            <input type="text" id="keywordFilter" class="filter-input" placeholder="Title, Company..." oninput="applyFilters()">
+                            <input type="text" class="filter-input" id="keywordFilter" placeholder="Enter keyword...">
                         </div>
                         <div class="filter-group">
                             <label class="filter-label">Location</label>
-                            <select id="locationFilter" class="filter-select" onchange="applyFilters()">
-                                <option value="">All Locations</option>
-                                <option value="Bangalore">Bangalore</option>
-                                <option value="Mumbai">Mumbai</option>
-                                <option value="Hyderabad">Hyderabad</option>
-                                <option value="Pune">Pune</option>
-                                <option value="Chennai">Chennai</option>
-                                <option value="Gurgaon">Gurgaon</option>
-                                <option value="Noida">Noida</option>
-                                <option value="Delhi">Delhi</option>
-                            </select>
+                            <input type="text" class="filter-input" id="locationFilter" placeholder="Enter location...">
                         </div>
                         <div class="filter-group">
-                            <label class="filter-label">Mode</label>
-                            <select id="modeFilter" class="filter-select" onchange="applyFilters()">
-                                <option value="">All Modes</option>
+                            <label class="filter-label">Work Mode</label>
+                            <select class="filter-select" id="modeFilter">
+                                <option value="All">All</option>
                                 <option value="Remote">Remote</option>
-                                <option value="Hybrid">Hybrid</option>
                                 <option value="Onsite">Onsite</option>
+                                <option value="Hybrid">Hybrid</option>
                             </select>
                         </div>
                         <div class="filter-group">
                             <label class="filter-label">Experience</label>
-                            <select id="experienceFilter" class="filter-select" onchange="applyFilters()">
-                                <option value="">All Levels</option>
+                            <select class="filter-select" id="experienceFilter">
+                                <option value="All">All</option>
                                 <option value="Fresher">Fresher</option>
                                 <option value="0-1">0-1 Years</option>
                                 <option value="1-3">1-3 Years</option>
@@ -1973,13 +2408,590 @@
                         </div>
                         <div class="filter-group">
                             <label class="filter-label">Source</label>
-                            <select id="sourceFilter" class="filter-select" onchange="applyFilters()">
-                                <option value="">All Sources</option>
+                            <select class="filter-select" id="sourceFilter">
+                                <option value="All">All</option>
                                 <option value="LinkedIn">LinkedIn</option>
                                 <option value="Naukri">Naukri</option>
                                 <option value="Indeed">Indeed</option>
                             </select>
                         </div>
-                        
                         <div class="filter-group">
-                            
+                            <label class="filter-label">Match Threshold</label>
+                            <select class="filter-select" id="matchThresholdFilter">
+                                <option value="All">All</option>
+                                <option value="75">75+ Score</option>
+                                <option value="50">50+ Score</option>
+                                <option value="25">25+ Score</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Status</label>
+                            <select class="filter-select" id="statusFilter">
+                                <option value="All">All</option>
+                                <option value="Not Applied">Not Applied</option>
+                                <option value="Applied">Applied</option>
+                                <option value="Rejected">Rejected</option>
+                                <option value="Selected">Selected</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="jobs-container" id="jobsContainer">
+                        ${renderJobs(jobDataset)}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('mainContent').innerHTML = content;
+            
+            // Add event listeners to filters
+            document.getElementById('keywordFilter').addEventListener('input', updateFilters);
+            document.getElementById('locationFilter').addEventListener('input', updateFilters);
+            document.getElementById('modeFilter').addEventListener('change', updateFilters);
+            document.getElementById('experienceFilter').addEventListener('change', updateFilters);
+            document.getElementById('sourceFilter').addEventListener('change', updateFilters);
+            document.getElementById('matchThresholdFilter').addEventListener('change', updateFilters);
+            document.getElementById('statusFilter').addEventListener('change', updateFilters);
+        }
+
+        // Update filters and re-render jobs
+        function updateFilters() {
+            const filters = {
+                keyword: document.getElementById('keywordFilter').value,
+                location: document.getElementById('locationFilter').value,
+                mode: document.getElementById('modeFilter').value,
+                experience: document.getElementById('experienceFilter').value,
+                source: document.getElementById('sourceFilter').value,
+                matchThreshold: document.getElementById('matchThresholdFilter').value,
+                status: document.getElementById('statusFilter').value
+            };
+            
+            const filteredJobs = applyFilters(jobDataset, filters);
+            document.getElementById('jobsContainer').innerHTML = renderJobs(filteredJobs);
+        }
+
+        // Render jobs
+        function renderJobs(jobs) {
+            const preferences = getPreferences();
+            
+            return jobs.map(job => {
+                const matchScore = preferences ? calculateMatchScore(job, preferences) : 0;
+                const isSaved = isJobSaved(job.id);
+                
+                // Determine match score class
+                let matchClass = 'match-score-very-low';
+                if (matchScore >= 75) matchClass = 'match-score-high';
+                else if (matchScore >= 50) matchClass = 'match-score-medium';
+                else if (matchScore >= 25) matchClass = 'match-score-low';
+                
+                return `
+                    <div class="job-card">
+                        <div class="job-header">
+                            <div>
+                                <h3 class="job-title">${job.title}</h3>
+                                <p class="job-company">${job.company} • ${job.location}</p>
+                            </div>
+                            <div>
+                                ${preferences ? `<span class="match-score ${matchClass}">${matchScore}% match</span>` : ''}
+                                ${renderStatusBadge(job.id)}
+                            </div>
+                        </div>
+                        
+                        <div class="job-details">
+                            <span class="job-location-mode">
+                                <strong>${job.mode}</strong> • 
+                                <strong>${job.experience}</strong>
+                            </span>
+                            <span class="job-salary">
+                                ${job.salaryRange}
+                            </span>
+                            <span class="source-badge">
+                                ${job.source}
+                            </span>
+                            <span class="posted-time">
+                                Posted ${job.postedDaysAgo === 0 ? 'today' : `${job.postedDaysAgo} days ago`}
+                            </span>
+                        </div>
+                        
+                        ${renderStatusButtons(job.id)}
+                        
+                        <div class="job-actions">
+                            <button class="btn-job btn-view" onclick="openJobModal(${job.id})">View Details</button>
+                            <button class="btn-job btn-save" onclick="toggleSaveJob(${job.id})">
+                                ${isSaved ? 'Unsave' : 'Save'}
+                            </button>
+                            <a href="${job.applyUrl}" target="_blank" class="btn-job btn-apply">Apply Now</a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Render settings page
+        function renderSettings() {
+            const preferences = getPreferences() || {};
+            
+            const content = `
+                <div class="settings-page">
+                    <h1 class="settings-title">Job Preferences</h1>
+                    
+                    <form class="preferences-form" id="preferencesForm">
+                        <div class="form-group">
+                            <label class="form-label" for="roleKeywords">Role Keywords (comma separated)</label>
+                            <input type="text" class="form-input" id="roleKeywords" value="${preferences.roleKeywords || ''}" placeholder="e.g., developer, engineer, analyst">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="skills">Skills (comma separated)</label>
+                            <input type="text" class="form-input" id="skills" value="${preferences.skills || ''}" placeholder="e.g., JavaScript, Python, React">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="preferredLocations">Preferred Locations (comma separated)</label>
+                            <input type="text" class="form-input" id="preferredLocations" value="${preferences.preferredLocations?.join(', ') || ''}" placeholder="e.g., Bangalore, Mumbai, Chennai">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="preferredMode">Preferred Work Mode</label>
+                            <select class="form-input" id="preferredMode">
+                                <option value="" ${!preferences.preferredMode ? 'selected' : ''}>Any</option>
+                                <option value="Remote" ${preferences.preferredMode === 'Remote' ? 'selected' : ''}>Remote</option>
+                                <option value="Onsite" ${preferences.preferredMode === 'Onsite' ? 'selected' : ''}>Onsite</option>
+                                <option value="Hybrid" ${preferences.preferredMode === 'Hybrid' ? 'selected' : ''}>Hybrid</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="experienceLevel">Experience Level</label>
+                            <select class="form-input" id="experienceLevel">
+                                <option value="" ${!preferences.experienceLevel ? 'selected' : ''}>Any</option>
+                                <option value="Fresher" ${preferences.experienceLevel === 'Fresher' ? 'selected' : ''}>Fresher</option>
+                                <option value="0-1" ${preferences.experienceLevel === '0-1' ? 'selected' : ''}>0-1 Years</option>
+                                <option value="1-3" ${preferences.experienceLevel === '1-3' ? 'selected' : ''}>1-3 Years</option>
+                                <option value="3-5" ${preferences.experienceLevel === '3-5' ? 'selected' : ''}>3-5 Years</option>
+                                <option value="5+" ${preferences.experienceLevel === '5+' ? 'selected' : ''}>5+ Years</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="matchThreshold">Minimum Match Threshold (%)</label>
+                            <div class="slider-container">
+                                <input type="range" id="matchThreshold" min="0" max="100" value="${preferences.matchThreshold || 0}">
+                                <span class="slider-value" id="thresholdValue">${preferences.matchThreshold || 0}%</span>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="cta-button" style="width: 100%; margin-top: var(--spacing-lg);">Save Preferences</button>
+                    </form>
+                </div>
+            `;
+            
+            document.getElementById('mainContent').innerHTML = content;
+            
+            // Add event listener to form
+            document.getElementById('preferencesForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const preferences = {
+                    roleKeywords: document.getElementById('roleKeywords').value,
+                    skills: document.getElementById('skills').value,
+                    preferredLocations: document.getElementById('preferredLocations').value.split(',').map(loc => loc.trim()).filter(loc => loc),
+                    preferredMode: document.getElementById('preferredMode').value,
+                    experienceLevel: document.getElementById('experienceLevel').value,
+                    matchThreshold: parseInt(document.getElementById('matchThreshold').value)
+                };
+                
+                savePreferences(preferences);
+                showToast('Preferences saved successfully!', 'success');
+                
+                // Navigate to dashboard
+                window.location.hash = '#/dashboard';
+            });
+            
+            // Add event listener to threshold slider
+            document.getElementById('matchThreshold').addEventListener('input', function() {
+                document.getElementById('thresholdValue').textContent = this.value + '%';
+            });
+        }
+
+        // Render saved jobs page
+        function renderSaved() {
+            const savedJobIds = getSavedJobs();
+            const savedJobs = jobDataset.filter(job => savedJobIds.includes(job.id));
+            
+            let content;
+            
+            if (savedJobs.length === 0) {
+                content = `
+                    <div class="saved-page">
+                        <h1 class="saved-title">Saved Jobs</h1>
+                        <div class="saved-empty">
+                            <p>You haven't saved any jobs yet.</p>
+                            <a href="#/dashboard" class="cta-button" style="margin-top: var(--spacing-md);">Find Jobs</a>
+                        </div>
+                    </div>
+                `;
+            } else {
+                content = `
+                    <div class="saved-page">
+                        <h1 class="saved-title">Saved Jobs (${savedJobs.length})</h1>
+                        <div class="jobs-container">
+                            ${renderJobs(savedJobs)}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('mainContent').innerHTML = content;
+        }
+
+        // Render digest page
+        function renderDigest() {
+            const preferences = getPreferences();
+            if (!preferences) {
+                window.location.hash = '#/settings';
+                return;
+            }
+
+            // Get top 5 jobs sorted by match score
+            const jobsWithScores = jobDataset
+                .map(job => ({
+                    ...job,
+                    matchScore: calculateMatchScore(job, preferences)
+                }))
+                .sort((a, b) => b.matchScore - a.matchScore)
+                .slice(0, 5);
+            
+            const recentUpdates = getRecentStatusUpdates();
+            
+            const content = `
+                <div class="digest-page">
+                    <h1 class="digest-title">Daily Digest</h1>
+                    <p class="digest-subtitle">Top 5 matches for you today</p>
+                    
+                    <div class="digest-card">
+                        <div class="digest-header">
+                            <h2>Today's Top Matches</h2>
+                            <p>Based on your preferences</p>
+                        </div>
+                        
+                        <div class="digest-jobs">
+                            ${jobsWithScores.map(job => `
+                                <div class="digest-job">
+                                    <h3 class="digest-job-title">${job.title}</h3>
+                                    <p class="digest-job-company">${job.company} • ${job.location}</p>
+                                    <div class="digest-job-details">
+                                        <span><strong>${job.mode}</strong></span>
+                                        <span><strong>${job.experience}</strong></span>
+                                        <span>${job.salaryRange}</span>
+                                        <span class="digest-job-match match-score-high">${job.matchScore}% match</span>
+                                    </div>
+                                    <div class="digest-job-actions">
+                                        <a href="#/dashboard" class="digest-btn" onclick="scrollToJob(${job.id})">View on Dashboard</a>
+                                        <a href="${job.applyUrl}" target="_blank" class="digest-btn">Apply Now</a>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        ${recentUpdates.length > 0 ? `
+                        <div class="recent-updates-section">
+                            <h2 class="recent-updates-title">Recent Status Updates</h2>
+                            ${recentUpdates.slice().reverse().map(update => {
+                                const date = new Date(update.timestamp);
+                                const statusClass = `status-${update.status.toLowerCase()}-update`;
+                                return `
+                                    <div class="recent-update-item">
+                                        <div class="recent-update-job">
+                                            <strong>${update.jobTitle}</strong><br>
+                                            <small>${update.company}</small>
+                                        </div>
+                                        <div class="recent-update-status ${statusClass}">${update.status}</div>
+                                        <small>${date.toLocaleDateString()}</small>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                        ` : ''}
+                        
+                        <div class="digest-actions">
+                            <a href="#/dashboard" class="digest-btn-action">View All Jobs</a>
+                            <a href="#/settings" class="digest-btn-action">Update Preferences</a>
+                        </div>
+                        
+                        <div class="digest-footer">
+                            <p>Next digest will be sent tomorrow at 9 AM</p>
+                            <p class="simulation-note">Note: This is a simulation. No actual emails are sent.</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('mainContent').innerHTML = content;
+        }
+
+        // Render proof page
+        function renderProof() {
+            const content = `
+                <div class="settings-page">
+                    <h1 class="settings-title">Proof of Concept</h1>
+                    <div style="background: var(--bg-secondary); padding: var(--spacing-lg); border-radius: var(--radius-md); margin-top: var(--spacing-md);">
+                        <h3 style="color: var(--text-primary); margin-top: 0;">Status Tracking Persistence</h3>
+                        <p style="color: var(--text-secondary);">Current status mapping: <pre style="background: var(--bg-tertiary); padding: var(--spacing-md); border-radius: var(--radius-sm); margin: var(--spacing-sm) 0;">${JSON.stringify(getJobStatusMap(), null, 2)}</pre></p>
+                        <p style="color: var(--text-secondary);">Recent status updates: <pre style="background: var(--bg-tertiary); padding: var(--spacing-md); border-radius: var(--radius-sm); margin: var(--spacing-sm) 0;">${JSON.stringify(getRecentStatusUpdates(), null, 2)}</pre></p>
+                        <button class="btn-job btn-apply" onclick="localStorage.clear(); location.reload();" style="margin-top: var(--spacing-md);">Clear LocalStorage</button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('mainContent').innerHTML = content;
+        }
+
+        // Render landing page
+        function renderLanding() {
+            const content = `
+                <div class="landing-page">
+                    <h1 class="landing-headline">Stop Missing The Right Jobs.</h1>
+                    <p class="landing-subtext">Precision-matched job discovery delivered daily at 9AM.</p>
+                    <a href="#/settings" class="cta-button" id="ctaButton">Start Tracking</a>
+                </div>
+            `;
+            
+            document.getElementById('mainContent').innerHTML = content;
+        }
+
+        // Open job modal
+        function openJobModal(jobId) {
+            const job = jobDataset.find(j => j.id === jobId);
+            if (!job) return;
+            
+            document.getElementById('modalTitle').textContent = job.title;
+            document.getElementById('modalCompany').textContent = job.company;
+            document.getElementById('modalDescription').innerHTML = job.description.replace(/\n/g, '<br>');
+            
+            const skillsList = document.getElementById('modalSkills');
+            skillsList.innerHTML = job.skills.map(skill => `
+                <span class="skill-tag">${skill}</span>
+            `).join('');
+            
+            document.getElementById('jobModal').style.display = 'flex';
+        }
+
+        // Close job modal
+        function closeJobModal() {
+            document.getElementById('jobModal').style.display = 'none';
+        }
+
+        // Toggle save job
+        function toggleSaveJob(jobId) {
+            if (isJobSaved(jobId)) {
+                removeSavedJob(jobId);
+                showToast('Job removed from saved', 'success');
+            } else {
+                saveJob(jobId);
+                showToast('Job saved successfully', 'success');
+            }
+            
+            // Update UI if we're on the saved page
+            if (window.location.hash === '#/saved') {
+                renderSaved();
+            }
+        }
+
+        // Scroll to job on dashboard
+        function scrollToJob(jobId) {
+            window.location.hash = '#/dashboard';
+            setTimeout(() => {
+                const jobElement = document.querySelector(`[onclick*="openJobModal(${jobId})"]`);
+                if (jobElement) {
+                    jobElement.closest('.job-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 100);
+        }
+
+        // Handle route changes
+        function handleRouteChange() {
+            const hash = window.location.hash.substring(1) || '/';
+            const routeFunction = routes[hash];
+            
+            if (routeFunction) {
+                routeFunction();
+                
+                // Update active nav links
+                document.querySelectorAll('.nav-link, .mobile-nav-link').forEach(link => {
+                    link.classList.toggle('active', link.getAttribute('data-route') === hash);
+                });
+            } else {
+                renderLanding();
+            }
+        }
+
+        // Get test status from localStorage
+        function getTestStatus() {
+            const statusStr = localStorage.getItem('jobTrackerTestStatus');
+            return statusStr ? JSON.parse(statusStr) : [];
+        }
+
+        // Save test status to localStorage
+        function saveTestStatus(status) {
+            localStorage.setItem('jobTrackerTestStatus', JSON.stringify(status));
+        }
+
+        // Reset test status
+        function resetTestStatus() {
+            localStorage.removeItem('jobTrackerTestStatus');
+            renderTestChecklist();
+        }
+
+        // Render test checklist page
+        function renderTestChecklist() {
+            const testStatus = getTestStatus();
+            
+            // Tests definition
+            const tests = [
+                "Preferences persist after refresh",
+                "Match score calculates correctly",
+                "Show only matches toggle works",
+                "Save job persists after refresh",
+                "Apply opens in new tab",
+                "Status update persists after refresh",
+                "Status filter works correctly",
+                "Digest generates top 10 by score",
+                "Digest persists for the day",
+                "No console errors on main pages"
+            ];
+            
+            // Count passed tests
+            const passedCount = testStatus.filter(status => status).length;
+            
+            let testItemsHtml = '';
+            tests.forEach((test, index) => {
+                const isChecked = testStatus[index] || false;
+                testItemsHtml += `
+                    <div class="test-item">
+                        <label class="test-checkbox-container">
+                            <input type="checkbox" class="test-checkbox" data-test-index="${index}" ${isChecked ? 'checked' : ''}>
+                            <span class="test-label">${test}</span>
+                            <span class="tooltip">?
+                                <span class="tooltip-text">How to test</span>
+                            </span>
+                        </label>
+                    </div>
+                `;
+            });
+            
+            const content = `
+                <div class="test-checklist-page">
+                    <h1 class="test-title">Test Checklist</h1>
+                    
+                    <div class="test-summary">
+                        <h2>Tests Passed: <span id="passed-count">${passedCount}</span> / 10</h2>
+                        ${passedCount < 10 ? '<p class="warning">Resolve all issues before shipping.</p>' : '<p class="success">All tests passed!</p>'}
+                    </div>
+                    
+                    <div class="tests-container">
+                        ${testItemsHtml}
+                    </div>
+                    
+                    <div class="test-actions">
+                        <button class="btn-job btn-apply" onclick="resetTestStatus()">Reset Test Status</button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('mainContent').innerHTML = content;
+            
+            // Add event listeners to checkboxes
+            document.querySelectorAll('.test-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const index = parseInt(this.getAttribute('data-test-index'));
+                    const currentStatus = getTestStatus();
+                    
+                    // Ensure array is long enough
+                    while (currentStatus.length <= index) {
+                        currentStatus.push(false);
+                    }
+                    
+                    currentStatus[index] = this.checked;
+                    saveTestStatus(currentStatus);
+                    
+                    // Update the passed count display
+                    const passed = currentStatus.filter(status => status).length;
+                    document.getElementById('passed-count').textContent = passed;
+                    
+                    // Update warning message
+                    const warningEl = document.querySelector('.test-summary p');
+                    if (passed < 10) {
+                        warningEl.textContent = 'Resolve all issues before shipping.';
+                        warningEl.className = 'warning';
+                    } else {
+                        warningEl.textContent = 'All tests passed!';
+                        warningEl.className = 'success';
+                    }
+                });
+            });
+        }
+
+        // Render ship page
+        function renderShipPage() {
+            const testStatus = getTestStatus();
+            const allPassed = testStatus.length === 10 && testStatus.every(status => status);
+            
+            const content = `
+                <div class="ship-page">
+                    <h1 class="ship-title">Release Portal</h1>
+                    
+                    ${allPassed ? `
+                    <div class="ship-ready">
+                        <h2>Congratulations!</h2>
+                        <p>All tests have passed. You are now ready to ship.</p>
+                        <div class="ship-actions">
+                            <button class="btn-job btn-apply">Prepare Release</button>
+                            <button class="btn-job btn-view">Generate Reports</button>
+                        </div>
+                    </div>
+                    ` : `
+                    <div class="ship-locked">
+                        <h2>Access Locked</h2>
+                        <p>Complete all tests before shipping.</p>
+                        <p>Current status: ${testStatus.filter(status => status).length}/10 tests passed</p>
+                        <a href="#/jt/07-test" class="btn-job btn-apply">Go to Test Checklist</a>
+                    </div>
+                    `}
+                </div>
+            `;
+            
+            document.getElementById('mainContent').innerHTML = content;
+        }
+
+        // Initialize the app
+        function initApp() {
+            // Set up route handling
+            window.addEventListener('hashchange', handleRouteChange);
+            handleRouteChange();
+            
+            // Set up modal close button
+            document.getElementById('closeModal').addEventListener('click', closeJobModal);
+            
+            // Set up mobile menu toggle
+            document.getElementById('mobileMenuButton').addEventListener('click', function() {
+                const nav = document.getElementById('mobileNav');
+                nav.style.display = nav.style.display === 'block' ? 'none' : 'block';
+            });
+            
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(event) {
+                const mobileNav = document.getElementById('mobileNav');
+                const menuButton = document.getElementById('mobileMenuButton');
+                
+                if (!mobileNav.contains(event.target) && event.target !== menuButton && mobileNav.style.display === 'block') {
+                    mobileNav.style.display = 'none';
+                }
+            });
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>

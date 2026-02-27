@@ -675,38 +675,45 @@
             text-align: center;
         }
 
+        .digest-subtitle {
+            color: var(--text-secondary);
+            font-size: var(--font-size-lg);
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+        }
+
         .digest-card {
-            background-color: var(--bg-secondary);
+            background-color: white;
             border: 1px solid var(--border-light);
             border-radius: var(--radius-md);
-            padding: var(--spacing-xl);
-            margin: var(--spacing-lg) auto;
+            padding: var(--spacing-lg);
+            margin: 0 auto;
             max-width: 720px;
-            box-shadow: none;
+            box-shadow: 0 2px 8px var(--shadow-light);
         }
 
         .digest-header {
             text-align: center;
             margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--border-light);
         }
 
-        .digest-main-title {
+        .digest-header h2 {
             font-family: var(--font-heading);
             font-size: var(--font-size-2xl);
             color: var(--text-primary);
             margin: 0 0 var(--spacing-sm) 0;
         }
 
-        .digest-subtitle {
+        .digest-header p {
             color: var(--text-secondary);
-            font-size: var(--font-size-base);
             margin: 0;
+            font-size: var(--font-size-base);
         }
 
         .digest-jobs {
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
         }
 
         .digest-job {
@@ -714,6 +721,7 @@
             border: 1px solid var(--border-light);
             border-radius: var(--radius-md);
             padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
         }
 
         .digest-job-title {
@@ -740,86 +748,86 @@
             font-size: var(--font-size-sm);
         }
 
-        .digest-job-location {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-xs);
-        }
-
-        .digest-job-experience {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-xs);
-        }
-
         .digest-job-match {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-xs);
+            display: inline-block;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-xs);
+            font-weight: 500;
+            margin-left: var(--spacing-sm);
         }
 
         .digest-job-actions {
-            display: flex;
-            gap: var(--spacing-sm);
-            margin-top: var(--spacing-sm);
+            text-align: center;
+            margin-top: var(--spacing-md);
         }
 
-        .btn-digest {
-            font-family: var(--font-body);
-            font-size: var(--font-size-sm);
-            line-height: var(--line-height-tight);
-            border-radius: var(--radius-md);
-            border: 1px solid transparent;
-            cursor: pointer;
-            transition: all var(--transition-normal);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--spacing-xs);
-            padding: var(--spacing-sm) var(--spacing-md);
-            text-decoration: none;
-        }
-
-        .btn-digest-primary {
+        .digest-btn {
             background-color: var(--accent-primary);
             color: white;
             border: 1px solid var(--accent-primary);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            text-decoration: none;
+            display: inline-block;
+            margin: 0 var(--spacing-xs);
         }
 
-        .btn-digest-primary:hover {
+        .digest-btn:hover {
             background-color: var(--accent-primary-hover);
             border-color: var(--accent-primary-hover);
         }
 
-        .btn-digest-secondary {
-            background-color: var(--bg-tertiary);
-            color: var(--text-primary);
-            border: 1px solid var(--border-medium);
-        }
-
-        .btn-digest-secondary:hover {
-            background-color: var(--border-light);
-        }
-
         .digest-footer {
             text-align: center;
-            margin-top: var(--spacing-xl);
             color: var(--text-secondary);
             font-size: var(--font-size-sm);
+            padding-top: var(--spacing-md);
+            border-top: 1px solid var(--border-light);
+            margin-top: var(--spacing-lg);
         }
 
         .digest-actions {
-            display: flex;
-            gap: var(--spacing-md);
-            justify-content: center;
-            margin-bottom: var(--spacing-lg);
+            text-align: center;
+            margin: var(--spacing-lg) 0;
         }
 
-        .digest-note {
+        .digest-btn-action {
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-medium);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: var(--font-size-base);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            text-decoration: none;
+            display: inline-block;
+            margin: 0 var(--spacing-xs);
+        }
+
+        .digest-btn-action:hover {
+            background-color: var(--border-light);
+        }
+
+        .digest-blocking-message {
             text-align: center;
-            margin-top: var(--spacing-lg);
+            padding: var(--spacing-xl) var(--spacing-lg);
+            color: var(--text-secondary);
+            font-size: var(--font-size-lg);
+            line-height: var(--line-height-normal);
+        }
+
+        .simulation-note {
+            text-align: center;
             color: var(--text-tertiary);
             font-size: var(--font-size-sm);
+            margin-top: var(--spacing-sm);
         }
 
         /* Proof Page Styles */
@@ -873,10 +881,6 @@
             }
 
             .job-actions {
-                flex-direction: column;
-            }
-
-            .digest-actions {
                 flex-direction: column;
             }
         }
@@ -1916,18 +1920,27 @@
             return `${score}/100`;
         }
 
-        // Generate digest for today
-        function generateDigest() {
-            const preferences = getPreferences();
-            if (!preferences) {
-                return null;
-            }
+        // Get today's date in YYYY-MM-DD format
+        function getTodayDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
 
-            // Get today's date in YYYY-MM-DD format
-            const today = new Date().toISOString().split('T')[0];
-            const digestKey = `jobTrackerDigest_${today}`;
+        // Get digest key for today
+        function getDigestKey() {
+            return `jobTrackerDigest_${getTodayDate()}`;
+        }
+
+        // Generate daily digest
+        function generateDailyDigest() {
+            const preferences = getPreferences();
+            if (!preferences) return null;
 
             // Check if digest already exists for today
+            const digestKey = getDigestKey();
             const existingDigest = localStorage.getItem(digestKey);
             if (existingDigest) {
                 return JSON.parse(existingDigest);
@@ -1948,36 +1961,28 @@
             });
 
             // Take top 10 jobs
-            const top10Jobs = jobsWithScores.slice(0, 10);
-
-            // Create digest object
-            const digest = {
-                date: today,
-                jobs: top10Jobs
-            };
+            const topJobs = jobsWithScores.slice(0, 10);
 
             // Store in localStorage
-            localStorage.setItem(digestKey, JSON.stringify(digest));
+            localStorage.setItem(digestKey, JSON.stringify(topJobs));
 
-            return digest;
+            return topJobs;
         }
 
         // Copy digest to clipboard
         function copyDigestToClipboard() {
-            const preferences = getPreferences();
-            if (!preferences) {
-                alert("Set preferences to generate a personalized digest.");
+            const digestKey = getDigestKey();
+            const digest = localStorage.getItem(digestKey);
+            
+            if (!digest) {
+                alert('No digest available to copy.');
                 return;
             }
 
-            const digest = generateDigest();
-            if (!digest || digest.jobs.length === 0) {
-                alert("No matching roles today. Check again tomorrow.");
-                return;
-            }
-
-            let digestText = `Top 10 Jobs For You — 9AM Digest\nDate: ${digest.date}\n\n`;
-            digest.jobs.forEach((job, index) => {
+            const jobs = JSON.parse(digest);
+            let digestText = `Top 10 Jobs For You — 9AM Digest\n${new Date().toLocaleDateString()}\n\n`;
+            
+            jobs.forEach((job, index) => {
                 digestText += `${index + 1}. ${job.title}\n`;
                 digestText += `   Company: ${job.company}\n`;
                 digestText += `   Location: ${job.location}\n`;
@@ -1985,31 +1990,33 @@
                 digestText += `   Match Score: ${job.matchScore}/100\n`;
                 digestText += `   Apply: ${job.applyUrl}\n\n`;
             });
+            
+            digestText += "This digest was generated based on your preferences.";
 
-            navigator.clipboard.writeText(digestText).then(() => {
-                alert("Digest copied to clipboard!");
-            }).catch(err => {
-                console.error('Failed to copy: ', err);
-                alert("Failed to copy digest to clipboard.");
-            });
+            navigator.clipboard.writeText(digestText)
+                .then(() => {
+                    alert('Digest copied to clipboard!');
+                })
+                .catch(err => {
+                    console.error('Failed to copy digest: ', err);
+                    alert('Failed to copy digest to clipboard.');
+                });
         }
 
         // Create email draft
         function createEmailDraft() {
-            const preferences = getPreferences();
-            if (!preferences) {
-                alert("Set preferences to generate a personalized digest.");
+            const digestKey = getDigestKey();
+            const digest = localStorage.getItem(digestKey);
+            
+            if (!digest) {
+                alert('No digest available to create email.');
                 return;
             }
 
-            const digest = generateDigest();
-            if (!digest || digest.jobs.length === 0) {
-                alert("No matching roles today. Check again tomorrow.");
-                return;
-            }
-
-            let digestText = `Top 10 Jobs For You — 9AM Digest\nDate: ${digest.date}\n\n`;
-            digest.jobs.forEach((job, index) => {
+            const jobs = JSON.parse(digest);
+            let digestText = `Top 10 Jobs For You — 9AM Digest\n${new Date().toLocaleDateString()}\n\n`;
+            
+            jobs.forEach((job, index) => {
                 digestText += `${index + 1}. ${job.title}\n`;
                 digestText += `   Company: ${job.company}\n`;
                 digestText += `   Location: ${job.location}\n`;
@@ -2017,33 +2024,15 @@
                 digestText += `   Match Score: ${job.matchScore}/100\n`;
                 digestText += `   Apply: ${job.applyUrl}\n\n`;
             });
+            
+            digestText += "This digest was generated based on your preferences.";
 
-            const subject = encodeURIComponent("My 9AM Job Digest");
+            const subject = encodeURIComponent('My 9AM Job Digest');
             const body = encodeURIComponent(digestText);
-            window.location.href = `mailto:?subject=${subject}&body=${body}`;
+            const mailtoLink = `mailto:?subject=${subject}&body=${body}`;
+            
+            window.location.href = mailtoLink;
         }
 
         // Landing page renderer
         function renderLanding() {
-            return `
-                <div class="landing-page">
-                    <h1 class="landing-headline">Stop Missing The Right Jobs.</h1>
-                    <p class="landing-subtext">Precision-matched job discovery delivered daily at 9AM.</p>
-                    <a href="#/settings" class="cta-button" id="ctaButton">Start Tracking</a>
-                </div>
-            `;
-        }
-
-        // Dashboard page renderer
-        function renderDashboard() {
-            const preferences = getPreferences();
-            const showOnlyMatches = document.getElementById('showOnlyMatchesToggle')?.checked || false;
-            const minMatchScore = preferences?.minMatchScore || 40;
-            
-            // Check if preferences exist
-            const hasPreferences = preferences && Object.keys(preferences).length > 0;
-            
-            let preferenceBanner = '';
-            if (!hasPreferences) {
-                preferenceBanner = `
-                    

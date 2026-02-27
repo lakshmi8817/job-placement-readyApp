@@ -1,0 +1,20 @@
+/* Base styles for the weather app */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+#root {
+  width: 100%;
+  height: 100vh;
+}The code appears to be syntactically correct. The development server is running without errors, and all the necessary files are in place.Your weather application should be fully functional at http://localhost:5174. The glass morphic design is implemented, the WeatherStack API integration is configured with your API key, and all the requested features (current, forecast, historical, marine, and location weather data with search and filtering) are available.If you're experiencing any specific issues when accessing the application in your browser, please let me know what error messages you're seeing, and I can help troubleshoot further.
